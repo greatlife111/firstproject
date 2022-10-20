@@ -1,36 +1,35 @@
 package model;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 // A class that includes all fields of a DueAlert
 public class Alert {
-    private Date date;
-    private int time;
+    private LocalDateTime date;
     private String due;
     private int repeat;
+    List<LocalDateTime> notifications;
 
     // Constructor method that creates a default Alert.
-    public Alert(Date date, int time, String due, int repeat) {
+    public Alert(LocalDateTime date, String due, int repeat) {
         this.date = date;
-        this.time = time;
         this.due = due;
         this.repeat = repeat;
+        notifications = calculateNotifications(date, repeat);
     }
 
 
     // REQUIRES: month has to be 1 to 12; days have to be 1-31
     // MODIFIES: this
     // EFFECTS: changes the date of the alert
-    public Date changeDate(Date d) {
+    public void changeDate(LocalDateTime d) {
         date = d;
     }
 
-    // REQUIRES: time is in between 0000 and 2359
-    // MODIFIES: this
-    // EFFECTS: changes the time of the alert
-    public void changeTime(int time) {
-        this.time = time;
-    }
 
     // REQUIRES: none
     // MODIFIES: this
@@ -46,12 +45,8 @@ public class Alert {
         this.repeat = repeat;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
-    }
-
-    public int getTime() {
-        return time;
     }
 
     public String getDue() {
@@ -60,5 +55,20 @@ public class Alert {
 
     public int getRepeat() {
         return repeat;
+    }
+
+    // REQUIRES: none
+    // MODIFIES: none
+    // EFFECTS: if input tim
+    public boolean shouldBeNotified(LocalDateTime time) {
+        return false;
+    }
+
+    public static List<LocalDateTime> calculateNotifications(LocalDateTime finalAlertTime, int repeat) {
+        List<LocalDateTime> notificationList;
+        notificationList = new ArrayList<>();
+        LocalDateTime delta_time = finalAlertTime.minus(LocalDateTime.now());
+        for ()
+
     }
 }

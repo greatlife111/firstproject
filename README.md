@@ -57,10 +57,11 @@ all the reminder information and student-friendly.
 
 ## User Stories
 
-- As a user, I want to be able to add a due alert to the memory base
+- As a user, I want to be able to add a due alert to my account
 - As a user, I want to be able to view all my alerts in the next 
 however many days as a list 
 - As a user, I want to be able to enter a date and view all the due alerts
 on the day
 - As a user, I want to be able to delete a due alert
+
 
