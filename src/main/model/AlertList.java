@@ -12,7 +12,7 @@ public class AlertList {
 
     //Constructor that creates an empty AlertList ArrayList
     public AlertList() {
-        list = new ArrayList<>();
+        list = new ArrayList<Alert>();
     }
 
     //REQUIRES: none
