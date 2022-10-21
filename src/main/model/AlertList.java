@@ -4,49 +4,58 @@ package model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 // A class that contains the list of all alerts an account has starting from current time
 public class AlertList {
 
-    ArrayList<Alert> list;
+    List<Alert> list;
 
     //Constructor that creates an empty AlertList ArrayList
     public AlertList() {
-        list = new ArrayList<Alert>();
+        list = new ArrayList<>();
     }
 
-    //REQUIRES: none
+    public boolean isEmpty() {
+        return list.size() == 0;
+    }
+
+    public int getSize() {
+        return list.size();
+    }
+
+    //REQUIRES: alert is not already in the list
     //MODIFIES: this
     //EFFECTS: add an alert to the list arraylist
-    public ArrayList<Alert> addAlert() {
-        return null;
+    public void addAlert(Alert a) {
+        list.add(a);
     }
 
     //REQUIRES: list must be nonempty
     //MODIFIES: this
     //EFFECTS: removes an alert in the list arraylist
-    public ArrayList<Alert> removeAlert() {
+    public List<Alert> removeAlert(Alert a) {
         return null;
     }
 
     //REQUIRES: none
     //MODIFIES: none
     //EFFECTS: outputs list of alerts before input date
-    public ArrayList<Alert> viewAlertBeforeDate(Date d) {
+    public List<Alert> viewAlertBeforeDate(Date d) {
         return null;
     }
 
     //REQUIRES: none
     //MODIFIES: none
     //EFFECTS: outputs list of alerts in the next d days
-    public ArrayList<Alert> viewAlertNextDays(int d) {
+    public List<Alert> viewAlertNextDays(int d) {
         return null;
     }
 
     //REQUIRES: none
     //MODIFIES: none
     //EFFECTS: displays all alerts on a given date
-    public ArrayList<Alert> viewAlertsOnTheDay(LocalDate d) {
+    public List<Alert> viewAlertsOnTheDay(LocalDate d) {
         return null;
     }
 
