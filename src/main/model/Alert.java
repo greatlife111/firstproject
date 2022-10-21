@@ -2,9 +2,12 @@ package model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 
 // A class that includes all fields of an Alert
@@ -19,23 +22,20 @@ public class Alert {
         this.date = date;
         this.due = due;
         this.repeat = repeat;
-        notifications = calculateNotifications(date, repeat);
+        this.notifications = calculateNotifications(date);
     }
 
     //REQUIRES: the alert is nonempty
     //MODIFIES: this
     //EFFECTS: return specific dates(type LocalDateTime) when the alert will be notified as an arraylist
-    public static List<LocalDateTime> calculateNotifications(LocalDateTime finalAlertTime, int repeat) {
+    public List<LocalDateTime> calculateNotifications(LocalDateTime finalAlertTime) {
         List<LocalDateTime> notificationList;
         notificationList = new ArrayList<>();
 
-        Duration duration =
-                Duration.of((Duration.between(LocalDateTime.now(), finalAlertTime)).toMinutes(), ChronoUnit.MINUTES);
+        long deltaTime = ChronoUnit.MINUTES.between(LocalDateTime.now(), finalAlertTime) / this.getRepeat();
 
-        long deltaTime = duration.toMinutes() / repeat;
-
-        for (LocalDateTime start = LocalDateTime.now(); LocalDateTime.now().isBefore(finalAlertTime); start = start.plusMinutes(deltaTime)) {
-            notificationList.add(start.plusMinutes(deltaTime));
+        for (LocalDateTime.now(); LocalDateTime.now().isEqual(finalAlertTime); LocalDateTime.now().plusMinutes(deltaTime)) {
+            notificationList.add(LocalDateTime.now().plusMinutes(deltaTime));
         }
         return notificationList;
     }
@@ -45,7 +45,7 @@ public class Alert {
     // EFFECTS: if the alert at the input time should be notified, return true; if not, return false
     public boolean shouldBeNotified(LocalDateTime time) {
         for (LocalDateTime n : notifications) {
-            if (n.isBefore(time)) {
+            if ((n.isBefore(time)) || n.isEqual(time)) {
                 return true;
             }
         }
@@ -84,6 +84,10 @@ public class Alert {
 
     public int getRepeat() {
         return repeat;
+    }
+
+    public List<LocalDateTime> getNotifications() {
+        return notifications;
     }
 
 }
