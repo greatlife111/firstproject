@@ -9,7 +9,7 @@ import java.util.List;
 // A class that contains the list of all alerts an account has starting from current time
 public class AlertList {
 
-    List<Alert> list;
+    private List<Alert> list;
 
     //Constructor that creates an empty AlertList ArrayList
     public AlertList() {

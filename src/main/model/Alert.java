@@ -1,41 +1,47 @@
 package model;
 
-import java.time.Duration;
+
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 
 // A class that includes all fields of an Alert
 public class Alert {
-    List<LocalDateTime> notifications; // List of dates where an alert will be notified
+    private List<LocalDateTime> notifications; // List of dates where an alert will be notified
     private LocalDateTime date;        // due date of the alert
     private String due;                // name of alert
     private int repeat;                // how many times the alert is repeated
+    private LocalDateTime createdDate;   // when the alert is made
+
 
     // Constructor method that creates a default Alert.
     public Alert(LocalDateTime date, String due, int repeat) {
+        this(LocalDateTime.now(), date, due, repeat);
+    }
+
+    public Alert(LocalDateTime createdDate, LocalDateTime date, String due, int repeat) {
         this.date = date;
         this.due = due;
         this.repeat = repeat;
-        this.notifications = calculateNotifications(date);
+        this.createdDate = createdDate;
+        this.notifications = calculateNotifications(createdDate, date, repeat);
     }
 
     //REQUIRES: the alert is nonempty
     //MODIFIES: this
     //EFFECTS: return specific dates(type LocalDateTime) when the alert will be notified as an arraylist
-    public List<LocalDateTime> calculateNotifications(LocalDateTime finalAlertTime) {
+    public List<LocalDateTime> calculateNotifications(LocalDateTime createdDate,
+                                                      LocalDateTime finalAlertTime, int repeat) {
         List<LocalDateTime> notificationList;
         notificationList = new ArrayList<>();
 
-        long deltaTime = ChronoUnit.MINUTES.between(LocalDateTime.now(), finalAlertTime) / this.getRepeat();
+        long deltaTime = ChronoUnit.NANOS.between(createdDate, finalAlertTime) / repeat;
 
-        for (LocalDateTime.now(); LocalDateTime.now().isEqual(finalAlertTime); LocalDateTime.now().plusMinutes(deltaTime)) {
-            notificationList.add(LocalDateTime.now().plusMinutes(deltaTime));
+        for (LocalDateTime now = createdDate.plusNanos(deltaTime);
+                now.isBefore(finalAlertTime) || now.isEqual(finalAlertTime); now = now.plusNanos(deltaTime)) {
+            notificationList.add(now);
         }
         return notificationList;
     }
@@ -46,10 +52,21 @@ public class Alert {
     public boolean shouldBeNotified(LocalDateTime time) {
         for (LocalDateTime n : notifications) {
             if ((n.isBefore(time)) || n.isEqual(time)) {
+
                 return true;
             }
         }
         return false;
+    }
+
+    public void checkNotification(LocalDateTime timeAtCheck) {
+        for (int i = 0; i < notifications.size(); i++) {
+            LocalDateTime n = notifications.get(i);
+            if ((n.isBefore(timeAtCheck)) || n.isEqual(timeAtCheck)) {
+                notifications.remove(i);
+                i--;
+            }
+        }
     }
 
 
@@ -74,11 +91,11 @@ public class Alert {
         this.repeat = repeat;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDateTime getFutureDate() {
         return date;
     }
 
-    public String getDue() {
+    public String getDueName() {
         return due;
     }
 
@@ -89,5 +106,10 @@ public class Alert {
     public List<LocalDateTime> getNotifications() {
         return notifications;
     }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
 
 }

@@ -37,8 +37,21 @@ public class TestAlertList {
 
     @Test
     public void testAddAlert() {
-        assertTrue(list1.isEmpty());
         list1.addAlert(alert1);
         assertEquals(1, list1.getSize());
+    }
+
+    @Test
+    public void testisEmpty() {
+        assertTrue(list1.isEmpty());
+    }
+
+    @Test
+    public void removeAlert() {
+        list1.addAlert(alert1);
+        list1.addAlert(alert2);
+        list1.removeAlert(alert2);
+
+
     }
 }
