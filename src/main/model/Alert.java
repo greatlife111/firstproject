@@ -59,7 +59,7 @@ public class Alert {
         return false;
     }
 
-    public void checkNotification(LocalDateTime timeAtCheck) {
+    public void confirmNotification(LocalDateTime timeAtCheck) {
         for (int i = 0; i < notifications.size(); i++) {
             LocalDateTime n = notifications.get(i);
             if ((n.isBefore(timeAtCheck)) || n.isEqual(timeAtCheck)) {

@@ -11,6 +11,18 @@ public class Account {
         this.name = name;
         this.alerts = alerts;
     }
+
+    public static int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public AlertList getAlerts() {
+        return alerts;
+    }
 }
 
 

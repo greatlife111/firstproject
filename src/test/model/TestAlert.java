@@ -66,7 +66,7 @@ class TestAlert {
 
     @Test
     void testCheckNotification() {
-        alertModel.checkNotification(futureAlertDate);
+        alertModel.confirmNotification(futureAlertDate);
         assertEquals(0, alertModel.getNotifications().size());
         assertFalse(alertModel.shouldBeNotified(futureAlertDate));
     }

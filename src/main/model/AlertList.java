@@ -2,6 +2,7 @@ package model;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,10 @@ public class AlertList {
     //Constructor that creates an empty AlertList ArrayList
     public AlertList() {
         list = new ArrayList<>();
+    }
+
+    public List<Alert> getList() {
+        return list;
     }
 
     public boolean isEmpty() {
@@ -34,14 +39,14 @@ public class AlertList {
     //REQUIRES: list must be nonempty
     //MODIFIES: this
     //EFFECTS: removes an alert in the list arraylist
-    public List<Alert> removeAlert(Alert a) {
-        return null;
+    public void removeAlert(Alert a) {
+        list.remove(a);
     }
 
     //REQUIRES: none
     //MODIFIES: none
     //EFFECTS: outputs list of alerts before input date
-    public List<Alert> viewAlertBeforeDate(Date d) {
+    public List<Alert> viewAlertBeforeDate(LocalDateTime d) {
         return null;
     }
 
