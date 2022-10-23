@@ -56,6 +56,7 @@ class TestAlert {
     @Test
     void testShouldBeNotifiedYes(){
         assertTrue(alertModel.shouldBeNotified(futureAlertDate));
+        assertTrue(alertModel.shouldBeNotified(futureAlertDate.plusDays(1)));
     }
 
     @Test
@@ -67,6 +68,13 @@ class TestAlert {
     @Test
     void testCheckNotification() {
         alertModel.confirmNotification(futureAlertDate);
+        assertEquals(0, alertModel.getNotifications().size());
+        assertFalse(alertModel.shouldBeNotified(futureAlertDate));
+    }
+
+    @Test
+    void testCheckNotificationBefore() {
+        alertModel.confirmNotification(futureAlertDate.plusDays(1));
         assertEquals(0, alertModel.getNotifications().size());
         assertFalse(alertModel.shouldBeNotified(futureAlertDate));
     }

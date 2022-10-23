@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestAlertList {
 
@@ -40,6 +39,7 @@ public class TestAlertList {
     void testAddAlert() {
         list1.addAlert(alert1);
         assertEquals(1, list1.getSize());
+        assertFalse(list1.isEmpty());
     }
 
     @Test
@@ -70,7 +70,9 @@ public class TestAlertList {
     @Test
     void testAlertOfTheDay() {
         list1.addAlert(alert1);
+        list1.addAlert(alert2);
         assertTrue(list1.viewAlertsOnTheDay(alert1.getFutureDate()).contains(alert1));
+        assertFalse(list1.viewAlertsOnTheDay(alert1.getFutureDate()).contains(alert2));
     }
 
     @Test
@@ -79,7 +81,7 @@ public class TestAlertList {
         list1.addAlert(alert2);
         list1.addAlert(alert3);
         LocalDateTime begin = LocalDateTime.of(2023,10,19,1,1);
-        assertEquals(3, list1.viewAlertNextDays(5, begin).size());
+        assertEquals(2, list1.viewAlertNextDays(2, begin).size());
     }
 
     @Test
