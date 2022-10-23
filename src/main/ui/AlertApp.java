@@ -1,13 +1,16 @@
 package ui;
 
 import model.Account;
+import model.Alert;
 import model.AlertList;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class AlertApp {
     private Account myAccount;
-    private Scanner input;
+    private final Scanner input;
 
     public AlertApp() {
         input = new Scanner(System.in);
@@ -41,7 +44,7 @@ public class AlertApp {
 
     private void processCommand(String command) {
         if (command.equals("A")) {
-            addAlert();            
+            addAlert();
         } else if (command.equals("B")) {
             deleteAlert();
         } else if (command.equals("C")) {
@@ -67,32 +70,54 @@ public class AlertApp {
     }
 
     private void accountInformation() {
-        
+
     }
 
     private void confirmNotification() {
-        
+
     }
 
     private void viewOnTheDay() {
-        
+
     }
 
     private void viewNotifications() {
-        
+
     }
 
     private void viewNextDays() {
-        
+
     }
 
     private void viewAllAlerts() {
+        if (myAccount.getAlerts().isEmpty()) {
+            System.out.println("NOTHING FOR NOW!");
+        } else {
+            System.out.println(myAccount.getAlerts());
+        }
     }
 
     private void deleteAlert() {
+        System.out.println("ENTER ALERT NAME");
+        String alertName = input.nextLine();
+        myAccount.getAlerts().removeAlert(alertName);
     }
 
     private void addAlert() {
+        System.out.println("ENTER ALERT NAME");
+        String alertName = input.nextLine();
+
+        System.out.println("ENTER DATE AS yyyy-MM-dd (space) HH:mm");
+        String dueDate = input.nextLine();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime dueTime = LocalDateTime.parse(dueDate, dateFormat);
+
+        System.out.println("HOW MANY TIMES DO YOU WANT IT TO REPEAT?");
+        int repeat = input.nextInt();
+
+        Alert theOneAdded = new Alert(dueTime, alertName, repeat);
+        myAccount.getAlerts().addAlert(theOneAdded);
+
     }
 
     private void displayFunctions() {

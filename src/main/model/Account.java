@@ -2,7 +2,7 @@ package model;
 
 // represents an account having an id, name, and list of alerts.
 public class Account {
-    private static int id;
+    private int id;
     private String name;
     private AlertList alerts;
 
@@ -12,7 +12,7 @@ public class Account {
         this.alerts = alerts;
     }
 
-    public static int getId() {
+    public int getId() {
         return id;
     }
 
@@ -22,6 +22,10 @@ public class Account {
 
     public AlertList getAlerts() {
         return alerts;
+    }
+
+    public void changeName(String s) {
+        name = s;
     }
 }
 

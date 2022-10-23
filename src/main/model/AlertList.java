@@ -1,20 +1,25 @@
 package model;
 
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 // A class that contains the list of all alerts an account has starting from current time
 public class AlertList {
 
     private List<Alert> list;
+    private List<Alert> alertListBeforeDate;
 
     //Constructor that creates an empty AlertList ArrayList
     public AlertList() {
         list = new ArrayList<>();
+    }
+
+
+    public List<Alert> getAlertListBeforeDate() {
+        return alertListBeforeDate;
     }
 
     public List<Alert> getList() {
@@ -39,29 +44,62 @@ public class AlertList {
     //REQUIRES: list must be nonempty
     //MODIFIES: this
     //EFFECTS: removes an alert in the list arraylist
-    public void removeAlert(Alert a) {
-        list.remove(a);
+    public void removeAlert(String alertName) {
+        for (int i = 0; i < list.size(); i++) {
+            Alert a = list.get(i);
+            if (a.getDueName().equals(alertName)) {
+                list.remove(i);
+                i--;
+            }
+        }
     }
 
     //REQUIRES: none
     //MODIFIES: none
     //EFFECTS: outputs list of alerts before input date
     public List<Alert> viewAlertBeforeDate(LocalDateTime d) {
-        return null;
+        alertListBeforeDate = new ArrayList<>();
+        for (Alert a : list) {
+            if (a.getFutureDate().isBefore(d)) {
+                alertListBeforeDate.add(a);
+            }
+        }
+        return alertListBeforeDate;
     }
 
     //REQUIRES: none
     //MODIFIES: none
     //EFFECTS: outputs list of alerts in the next d days
+    public List<Alert> viewAlertNextDays(int d, LocalDateTime now) {
+        List<Alert> alertListOfNextDays;
+        alertListOfNextDays = new ArrayList<>();
+
+        LocalDateTime endDate = now.plusDays(d + 1);
+        endDate = LocalDateTime.of(endDate.getYear(),endDate.getMonthValue(), endDate.getDayOfMonth(), 0, 0);
+        for (Alert a : list) {
+            if (a.getFutureDate().isBefore(endDate)) {
+                alertListOfNextDays.add(a);
+            }
+        }
+        return alertListOfNextDays;
+    }
+
     public List<Alert> viewAlertNextDays(int d) {
-        return null;
+        return this.viewAlertNextDays(d, LocalDateTime.now());
     }
 
     //REQUIRES: none
     //MODIFIES: none
     //EFFECTS: displays all alerts on a given date
-    public List<Alert> viewAlertsOnTheDay(LocalDate d) {
-        return null;
+    public List<Alert> viewAlertsOnTheDay(LocalDateTime d) {
+        List<Alert> alertListOfTheDay;
+        alertListOfTheDay = new ArrayList<>();
+        for (Alert a : list) {
+            if (a.getFutureDate().isEqual(d)) {
+                alertListOfTheDay.add(a);
+            }
+        }
+        return alertListOfTheDay;
     }
 
 
