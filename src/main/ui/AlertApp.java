@@ -9,8 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class AlertApp {
-    private Account myAccount;
     private final Scanner input;
+    private Account myAccount;
 
     public AlertApp() {
         input = new Scanner(System.in);
@@ -82,10 +82,32 @@ public class AlertApp {
     }
 
     private void viewNotifications() {
-
+        boolean thereIsNothing = true;
+        for (Alert a : myAccount.getAlerts().getList()) {
+            if (a.shouldBeNotified(LocalDateTime.now())) {
+                thereIsNothing = false;
+                System.out.println("Alert name:" + a.getDueName());
+                System.out.println("Due time:" + a.getFutureDate());
+            }
+        }
+        if (thereIsNothing) {
+            System.out.println("NOTHING FOR NOW");
+        }
     }
 
     private void viewNextDays() {
+        System.out.println("HOW MANY DAYS?");
+        String day = input.nextLine();
+
+        if (myAccount.getAlerts().isEmpty()) {
+            System.out.println("NOTHING FOR NOW!");
+        } else {
+            for (Alert a : myAccount.getAlerts().viewAlertNextDays(Integer.parseInt(day))) {
+                System.out.println("Alert name:" + a.getDueName());
+                System.out.println("Due time:" + a.getFutureDate());
+                System.out.println("Repeat:" + a.getRepeat());
+            }
+        }
 
     }
 
@@ -93,7 +115,11 @@ public class AlertApp {
         if (myAccount.getAlerts().isEmpty()) {
             System.out.println("NOTHING FOR NOW!");
         } else {
-            System.out.println(myAccount.getAlerts());
+            for (Alert a : myAccount.getAlerts().getList()) {
+                System.out.println("Alert name:" + a.getDueName());
+                System.out.println("Due time:" + a.getFutureDate());
+                System.out.println("Repeat:" + a.getRepeat());
+            }
         }
     }
 
