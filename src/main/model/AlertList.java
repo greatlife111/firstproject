@@ -1,7 +1,6 @@
 package model;
 
 
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +35,12 @@ public class AlertList {
 
     //REQUIRES: alert is not already in the list
     //MODIFIES: this
-    //EFFECTS: add an alert to the list arraylist
-    public void addAlert(Alert a) {
-        list.add(a);
+    //EFFECTS: add an alert to the list
+    public boolean addAlert(Alert a) {
+        if (!(list.contains(a))) {
+            list.add(a);
+        }
+        return false;
     }
 
     //REQUIRES: list must be nonempty
@@ -75,7 +77,7 @@ public class AlertList {
         alertListOfNextDays = new ArrayList<>();
 
         LocalDateTime endDate = now.plusDays(d + 1);
-        endDate = LocalDateTime.of(endDate.getYear(),endDate.getMonthValue(), endDate.getDayOfMonth(), 0, 0);
+        endDate = LocalDateTime.of(endDate.getYear(), endDate.getMonthValue(), endDate.getDayOfMonth(), 0, 0);
         for (Alert a : list) {
             if (a.getFutureDate().isBefore(endDate)) {
                 alertListOfNextDays.add(a);

@@ -240,18 +240,27 @@ public class AlertApp {
     private void addAlert() {
         System.out.println("ENTER ALERT NAME");
         String alertName = input.nextLine().toUpperCase();
+        boolean alertDoesntExist = true;
 
-        System.out.println("ENTER DATE AS yyyy-MM-dd (space) HH:mm");
-        String dueDate = input.nextLine();
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dueTime = LocalDateTime.parse(dueDate, dateFormat);
+        for (Alert a : myAccount.getAlerts().getList()) {
+            if (a.getDueName().equals(alertName)) {
+                alertDoesntExist = false;
+                System.out.println("ALERT NAME ALREADY EXISTS");
+            }
+        }
 
-        System.out.println("HOW MANY TIMES DO YOU WANT IT TO REPEAT? MINIMUM IS 1");
-        String repeat = input.nextLine();
+        if (alertDoesntExist) {
+            System.out.println("ENTER DATE AS yyyy-MM-dd (space) HH:mm");
+            String dueDate = input.nextLine();
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime dueTime = LocalDateTime.parse(dueDate, dateFormat);
 
-        Alert theOneAdded = new Alert(dueTime, alertName, Integer.parseInt(repeat));
-        myAccount.getAlerts().addAlert(theOneAdded);
+            System.out.println("HOW MANY TIMES DO YOU WANT IT TO REPEAT?");
+            String repeat = input.nextLine();
 
+            Alert theOneAdded = new Alert(dueTime, alertName, Integer.parseInt(repeat));
+            myAccount.getAlerts().addAlert(theOneAdded);
+        }
     }
 
     private void displayFunctions() {

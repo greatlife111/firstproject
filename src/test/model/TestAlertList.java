@@ -40,7 +40,9 @@ public class TestAlertList {
         list1.addAlert(alert1);
         assertEquals(1, list1.getSize());
         assertFalse(list1.isEmpty());
+        assertFalse(list1.addAlert(alert1));
     }
+
 
     @Test
     void testisEmpty() {

@@ -16,11 +16,17 @@ public class Alert {
     private LocalDateTime createdDate;   // when the alert is made
 
 
-    // Constructor method that creates a default Alert.
+    //REQUIRES: none
+    //MODIFIES: none
+    //EFFECTS: uses method overload to create an alert at current time
     public Alert(LocalDateTime date, String due, int repeat) {
         this(LocalDateTime.now(), date, due, repeat);
     }
 
+    //REQUIRES: due is of non-zero length
+    //MODIFIES: none
+    //EFFECTS: creates an alert with starting time of createdDated; due date of the alert is set to input
+    //         LocalDateTime date; alert name is set to input due; How many times the alert repeat is set to int repeat.
     public Alert(LocalDateTime createdDate, LocalDateTime date, String due, int repeat) {
         this.date = date;
         this.due = due;
@@ -60,8 +66,8 @@ public class Alert {
     }
 
     // REQUIRES: none
-    //
-    //
+    // MODIFIES: this
+    // EFFECTS: remove existing notifications at timeAtCheck
     public void confirmNotification(LocalDateTime timeAtCheck) {
         for (int i = 0; i < notifications.size(); i++) {
             LocalDateTime n = notifications.get(i);
@@ -87,7 +93,7 @@ public class Alert {
         this.due = due;
     }
 
-    // REQUIRES: repeat times >= 0
+    // REQUIRES: none
     // MODIFIES: this
     // EFFECTS: changes the name of the alert
     public void changeRepeat(int repeat) {
