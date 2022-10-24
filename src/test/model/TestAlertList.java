@@ -19,9 +19,9 @@ public class TestAlertList {
 
     @BeforeEach
     public void setup(){
-        foralert1 = LocalDateTime.of(2023, 10, 20, 1,1);
+        foralert1 = LocalDateTime.of(2023, 9, 20, 1,1);
         foralert2 = LocalDateTime.of(2023,10, 21, 1,1);
-        foralert3 = LocalDateTime.of(2022, 11, 22, 1, 1);
+        foralert3 = LocalDateTime.of(2022, 11, 22, 2, 2);
         list1 = new AlertList();
         alert1 = new Alert(foralert1, "alert1", 1);
         alert2 = new Alert(foralert2, "alert2", 2);
@@ -84,7 +84,7 @@ public class TestAlertList {
         list1.addAlert(alert2);
         list1.addAlert(alert3);
         LocalDateTime begin = LocalDateTime.of(2023,10,19,1,1);
-        assertEquals(2, list1.viewAlertNextDays(2, begin).size());
+        assertEquals(2, list1.viewAlertNextDays(1, begin).size());
     }
 
     @Test
