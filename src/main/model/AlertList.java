@@ -25,6 +25,9 @@ public class AlertList {
         return list;
     }
 
+    // REQUIRES: none
+    // MODIFIES: none
+    // EFFECTS: returns the size of alert list
     public boolean isEmpty() {
         return list.size() == 0;
     }
@@ -33,9 +36,9 @@ public class AlertList {
         return list.size();
     }
 
-    //REQUIRES: alert is not already in the list
-    //MODIFIES: this
-    //EFFECTS: add an alert to the list
+    // REQUIRES: alert is not already in the list
+    // MODIFIES: this
+    // EFFECTS: add an alert to the list if it does not exist in the list
     public boolean addAlert(Alert a) {
         if (!(list.contains(a))) {
             list.add(a);
@@ -43,9 +46,9 @@ public class AlertList {
         return false;
     }
 
-    //REQUIRES: list must be nonempty
-    //MODIFIES: this
-    //EFFECTS: removes an alert in the list arraylist
+    // REQUIRES: list must be nonempty
+    // MODIFIES: this
+    // EFFECTS: removes an alert in the list arraylist
     public void removeAlert(String alertName) {
         for (int i = 0; i < list.size(); i++) {
             Alert a = list.get(i);
@@ -56,9 +59,9 @@ public class AlertList {
         } //remember boolean case
     }
 
-    //REQUIRES: none
-    //MODIFIES: none
-    //EFFECTS: outputs list of alerts before input date
+    // REQUIRES: none
+    // MODIFIES: none
+    // EFFECTS: outputs list of alerts before input date
     public List<Alert> viewAlertBeforeDate(LocalDateTime d) {
         alertListBeforeDate = new ArrayList<>();
         for (Alert a : list) {
@@ -69,9 +72,9 @@ public class AlertList {
         return alertListBeforeDate;
     }
 
-    //REQUIRES: none
-    //MODIFIES: none
-    //EFFECTS: outputs list of alerts in the next d days
+    // REQUIRES: none
+    // MODIFIES: none
+    // EFFECTS: outputs list of alerts in the next d days
     public List<Alert> viewAlertNextDays(int d, LocalDateTime now) {
         List<Alert> alertListOfNextDays;
         alertListOfNextDays = new ArrayList<>();
@@ -90,9 +93,9 @@ public class AlertList {
         return this.viewAlertNextDays(d, LocalDateTime.now());
     }
 
-    //REQUIRES: none
-    //MODIFIES: none
-    //EFFECTS: displays all alerts on a given date
+    // REQUIRES: none
+    // MODIFIES: none
+    // EFFECTS: displays all alerts on a given date
     public List<Alert> viewAlertsOnTheDay(LocalDateTime d) {
         List<Alert> alertListOfTheDay;
         alertListOfTheDay = new ArrayList<>();

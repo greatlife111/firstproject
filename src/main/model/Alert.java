@@ -35,9 +35,9 @@ public class Alert {
         this.notifications = calculateNotifications(createdDate, date, repeat);
     }
 
-    //REQUIRES: the alert is nonempty
-    //MODIFIES: this
-    //EFFECTS: return specific dates(type LocalDateTime) when the alert will be notified as an arraylist
+    // REQUIRES: repeat is at least 1
+    // MODIFIES: this
+    // EFFECTS: return specific dates(type LocalDateTime) when the alert will be notified as an arraylist
     public List<LocalDateTime> calculateNotifications(LocalDateTime createdDate,
                                                       LocalDateTime finalAlertTime, int repeat) {
         List<LocalDateTime> notificationList;
@@ -67,7 +67,7 @@ public class Alert {
 
     // REQUIRES: none
     // MODIFIES: this
-    // EFFECTS: remove existing notifications at timeAtCheck
+    // EFFECTS: remove existing notifications in the list of notifications at timeAtCheck
     public void confirmNotification(LocalDateTime timeAtCheck) {
         for (int i = 0; i < notifications.size(); i++) {
             LocalDateTime n = notifications.get(i);
@@ -79,7 +79,8 @@ public class Alert {
     }
 
 
-    // REQUIRES: month has to be 1 to 12; days have to be 1-31
+    // REQUIRES: month is between 1 and 12; day is between 1 and 31; hour is between 00 and 23; minute is between
+    //           00 and 59
     // MODIFIES: this
     // EFFECTS: changes the date of the alert
     public void changeDate(LocalDateTime d) {
@@ -95,7 +96,7 @@ public class Alert {
 
     // REQUIRES: none
     // MODIFIES: this
-    // EFFECTS: changes the name of the alert
+    // EFFECTS: changes the amount of times an alert repeat
     public void changeRepeat(int repeat) {
         this.repeat = repeat;
     }

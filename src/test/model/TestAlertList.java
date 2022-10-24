@@ -21,7 +21,7 @@ public class TestAlertList {
     public void setup(){
         foralert1 = LocalDateTime.of(2023, 10, 20, 1,1);
         foralert2 = LocalDateTime.of(2023,10, 21, 1,1);
-        foralert3 = LocalDateTime.of(2023, 10, 22, 1, 1);
+        foralert3 = LocalDateTime.of(2022, 11, 22, 1, 1);
         list1 = new AlertList();
         alert1 = new Alert(foralert1, "alert1", 1);
         alert2 = new Alert(foralert2, "alert2", 2);
@@ -75,6 +75,7 @@ public class TestAlertList {
         list1.addAlert(alert2);
         assertTrue(list1.viewAlertsOnTheDay(alert1.getFutureDate()).contains(alert1));
         assertFalse(list1.viewAlertsOnTheDay(alert1.getFutureDate()).contains(alert2));
+        assertFalse(list1.viewAlertsOnTheDay(alert3.getFutureDate()).contains(alert1));
     }
 
     @Test

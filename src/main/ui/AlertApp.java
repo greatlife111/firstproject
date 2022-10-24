@@ -255,7 +255,7 @@ public class AlertApp {
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime dueTime = LocalDateTime.parse(dueDate, dateFormat);
 
-            System.out.println("HOW MANY TIMES DO YOU WANT IT TO REPEAT?");
+            System.out.println("HOW MANY TIMES DO YOU WANT IT TO REPEAT? MINIMUM IS 1");
             String repeat = input.nextLine();
 
             Alert theOneAdded = new Alert(dueTime, alertName, Integer.parseInt(repeat));
