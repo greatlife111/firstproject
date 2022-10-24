@@ -57,11 +57,13 @@ all the reminder information and student-friendly.
 
 ## User Stories
 
-- As a user, I want to be able to add a due alert to my account
+- As a user, I want to be able to add a due alert to my alert list.
 - As a user, I want to be able to view all my alerts in the next 
-however many days as a list 
+however many days.
+- As a user, I want to be able to view all my alerts before a certain date.
 - As a user, I want to be able to enter a date and view all the due alerts
-on the day
-- As a user, I want to be able to delete a due alert
+on the date.
+- As a user, I want to be able to delete a due alert.
+- As a user, I want to be able to edit account information and alert details.
 
 
