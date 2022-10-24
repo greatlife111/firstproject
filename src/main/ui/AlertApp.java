@@ -59,11 +59,9 @@ public class AlertApp {
             confirmNotification();
         } else if (command.equals("H")) {
             accountInformation();
-        } else if (command.equals("J")) {
-            editAccountInformation();
-        } else if (command.equals("K")) {
+        } else if (command.equals("I")) {
             alertDetails();
-        } else if (command.equals("L")) {
+        } else if (command.equals("J")) {
             editAlertDetails();
         } else {
             System.out.println("SELECTION INVALID");
@@ -87,32 +85,21 @@ public class AlertApp {
         System.out.println("TYPE THE ALERT NAME YOU WOULD LIKE TO CHANGE");
         String name = input.nextLine().toUpperCase();
         boolean alertDoesNotExist = true;
-
         for (Alert alert : myAccount.getAlerts().getList()) {
-            alertDoesNotExist = false;
             if (alert.getDueName().equals(name)) {
-                System.out.println("TYPE CHANGENAME IF YOU TO CHANGE NAME, TYPE CHANGEDATE IF YOU WOULD TO CHANGE"
-                                + " DUE DATE, TYPE CHANGEREPEAT TO CHANGE HOW MANY TIMES IT REPEATS");
-            }
-            String answer = input.nextLine().toUpperCase();
+                alertDoesNotExist = false;
+                System.out.println("TYPE N TO CHANGE NAME, D TO CHANGE DATE, R TO CHANGE REPEAT");
+                String answer = input.nextLine().toUpperCase();
 
-            if (answer.equals("CHANGENAME")) {
-                System.out.println("WHAT IS THE NEW ALERT NAME?");
-                String newName = input.nextLine().toUpperCase();
-                alert.changeDue(newName);
-            }
-            if (answer.equals("CHANGEDATE")) {
-                System.out.println("WHAT IS THE NEW DATE?");
-                System.out.println("ANSWER IN yyyy-MM-dd (space) HH:mm");
-                String newDate = input.nextLine();
-                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                LocalDateTime day = LocalDateTime.parse(newDate, dateFormat);
-                alert.changeDate(day);
-            }
-            if (answer.equals("CHANGEREPEAT")) {
-                System.out.println("HOW MANY TIMES WOULD THE ALERT REPEAT?");
-                String repeat = input.nextLine();
-                alert.changeRepeat(Integer.parseInt(repeat));
+                if (answer.equals("CHANGENAME")) {
+                    changeAlertName(alert);
+                }
+                if (answer.equals("CHANGEDATE")) {
+                    changeAlertDueDate(alert);
+                }
+                if (answer.equals("CHANGEREPEAT")) {
+                    changeRepeat(alert);
+                }
             }
         }
         if (alertDoesNotExist) {
@@ -120,49 +107,87 @@ public class AlertApp {
         }
     }
 
+    private void changeAlertName(Alert alert) {
+        System.out.println("WHAT IS THE NEW ALERT NAME?");
+        String newName = input.nextLine().toUpperCase();
+        alert.changeDue(newName);
+    }
+
+    private void changeAlertDueDate(Alert alert) {
+        System.out.println("WHAT IS THE NEW DATE?");
+        System.out.println("ANSWER IN yyyy-MM-dd (space) HH:mm");
+        String newDate = input.nextLine();
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime day = LocalDateTime.parse(newDate, dateFormat);
+        alert.changeDate(day);
+    }
+
+    private void changeRepeat(Alert alert) {
+        System.out.println("HOW MANY TIMES WOULD THE ALERT REPEAT?");
+        String repeat = input.nextLine();
+        alert.changeRepeat(Integer.parseInt(repeat));
+    }
+
 
     private void accountInformation() {
         System.out.println("Account ID:" + myAccount.getId());
         System.out.println("Name:" + myAccount.getName());
         System.out.println("Alerts:" + myAccount.getAlerts());
+        editAccountInformation();
     }
 
     private void editAccountInformation() {
+        System.out.println("ACCOUNT ID CANNOT BE CHANGED; TYPE NAME TO CHANGE NAME, TYPE ALERTS TO VIEW ALL ALERTS.");
+        String change = input.nextLine().toUpperCase();
+
+        if (change.equals("NAME")) {
+            myAccount.changeName(change);
+        } else if (change.equals("ALERTS")) {
+            viewAllAlerts();
+        } else {
+            System.out.println("INPUT INVALID");
+        }
     }
 
     private void confirmNotification() {
         System.out.println("CONFIRM THE NOTIFICATION BY TYPING ALERT NAME");
         String name = input.nextLine().toUpperCase();
+        LocalDateTime now = LocalDateTime.now();
+        Boolean nothing = true;
+        Boolean notSuchAlert = true;
 
         for (Alert alert : myAccount.getAlerts().getList()) {
             if (alert.getDueName().equals(name)) {
-                for (LocalDateTime time : alert.getNotifications()) {
-                    if (time.isEqual(LocalDateTime.now()) || time.isBefore(LocalDateTime.now())) {
-                        alert.getNotifications().remove(time);
-                        System.out.println("CONFIRMATION SUCCESSFUL");
-                    } else {
-                        System.out.println("ALL NOTIFICATIONS ALREADY CONFIRMED");
-                    }
+                notSuchAlert = false;
+                if (alert.shouldBeNotified(now)) {
+                    nothing = false;
+                    alert.confirmNotification(now);
+                    System.out.println("CONFIRMATION SUCCESSFUL");
                 }
             }
         }
+        if (notSuchAlert) {
+            System.out.println("ALERT DOES NOT EXIST");
+        } else if (nothing) {
+            System.out.println("ALL NOTIFICATIONS ALREADY CONFIRMED");
+        }
     }
+
 
     private void viewOnTheDay() {
         System.out.println("ENTER THE DATE IN THE FORMAT yyyy-MM-dd");
         String date = input.nextLine();
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        date += " 00:00";
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime theDay = LocalDateTime.parse(date, dateFormat);
 
-        for (Alert a : myAccount.getAlerts().getList()) {
-            if (a.getFutureDate().isEqual(theDay)) {
-                System.out.println("Alert name:" + a.getDueName());
-                System.out.println("Due time:" + a.getFutureDate());
-                System.out.println("Repeat:" + a.getRepeat());
-            }
+        for (Alert a : myAccount.getAlerts().viewAlertsOnTheDay(theDay)) {
+            System.out.println("Alert name:" + a.getDueName());
+            System.out.println("Due time:" + a.getFutureDate());
+            System.out.println("Repeat:" + a.getRepeat());
         }
-
     }
+
 
     private void viewNotifications() {
         boolean thereIsNothing = true;
@@ -222,9 +247,9 @@ public class AlertApp {
         LocalDateTime dueTime = LocalDateTime.parse(dueDate, dateFormat);
 
         System.out.println("HOW MANY TIMES DO YOU WANT IT TO REPEAT? MINIMUM IS 1");
-        int repeat = input.nextInt();
+        String repeat = input.nextLine();
 
-        Alert theOneAdded = new Alert(dueTime, alertName, repeat);
+        Alert theOneAdded = new Alert(dueTime, alertName, Integer.parseInt(repeat));
         myAccount.getAlerts().addAlert(theOneAdded);
 
     }
@@ -238,7 +263,8 @@ public class AlertApp {
         System.out.println("F: VIEW ON THE DAY");
         System.out.println("G: CONFIRM NOTIFICATION");
         System.out.println("H: ACCOUNT INFORMATION");
-        System.out.println("I: VIEW ALERT DETAIL");
+        System.out.println("I: VIEW ALERT DETAILS");
+        System.out.println("J: EDIT ALERT DETAILS");
         System.out.println("Q: QUIT");
     }
 }

@@ -51,7 +51,7 @@ public class AlertList {
                 list.remove(i);
                 i--;
             }
-        }
+        } //remember boolean case
     }
 
     //REQUIRES: none
@@ -95,7 +95,8 @@ public class AlertList {
         List<Alert> alertListOfTheDay;
         alertListOfTheDay = new ArrayList<>();
         for (Alert a : list) {
-            if (a.getFutureDate().isEqual(d)) {
+            if (a.getFutureDate().getYear() == d.getYear() && a.getFutureDate().getMonthValue() == d.getMonthValue()
+                    && a.getFutureDate().getDayOfMonth() == d.getDayOfMonth()) {
                 alertListOfTheDay.add(a);
             }
         }

@@ -59,6 +59,9 @@ public class Alert {
         return false;
     }
 
+    // REQUIRES: none
+    //
+    //
     public void confirmNotification(LocalDateTime timeAtCheck) {
         for (int i = 0; i < notifications.size(); i++) {
             LocalDateTime n = notifications.get(i);
