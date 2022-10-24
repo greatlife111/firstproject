@@ -16,16 +16,20 @@ public class TestAlertList {
     LocalDateTime foralert2;
     Alert alert3;
     LocalDateTime foralert3;
+    Alert alert4;
+    LocalDateTime foralert4;
 
     @BeforeEach
     public void setup(){
         foralert1 = LocalDateTime.of(2023, 9, 20, 1,1);
         foralert2 = LocalDateTime.of(2023,10, 21, 1,1);
         foralert3 = LocalDateTime.of(2022, 11, 22, 2, 2);
+        foralert4 = LocalDateTime.of(2023,10, 20, 1,1);
         list1 = new AlertList();
         alert1 = new Alert(foralert1, "alert1", 1);
         alert2 = new Alert(foralert2, "alert2", 2);
         alert3 = new Alert(foralert3, "alert3", 3);
+        alert4 = new Alert(foralert4, "alert4", 4);
 
     }
 
@@ -76,6 +80,7 @@ public class TestAlertList {
         assertTrue(list1.viewAlertsOnTheDay(alert1.getFutureDate()).contains(alert1));
         assertFalse(list1.viewAlertsOnTheDay(alert1.getFutureDate()).contains(alert2));
         assertFalse(list1.viewAlertsOnTheDay(alert3.getFutureDate()).contains(alert1));
+        assertFalse(list1.viewAlertsOnTheDay(alert4.getFutureDate()).contains(alert1));
     }
 
     @Test

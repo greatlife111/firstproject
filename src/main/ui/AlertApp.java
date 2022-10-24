@@ -91,14 +91,14 @@ public class AlertApp {
                 System.out.println("TYPE N TO CHANGE NAME, D TO CHANGE DATE, R TO CHANGE REPEAT");
                 String answer = input.nextLine().toUpperCase();
 
-                if (answer.equals("CHANGENAME")) {
+                if (answer.equals("N")) {
                     changeAlertName(alert);
-                }
-                if (answer.equals("CHANGEDATE")) {
+                } else if (answer.equals("D")) {
                     changeAlertDueDate(alert);
-                }
-                if (answer.equals("CHANGEREPEAT")) {
+                } else if (answer.equals("R")) {
                     changeRepeat(alert);
+                } else {
+                    System.out.println("INPUT INVALID");
                 }
             }
         }
@@ -133,8 +133,15 @@ public class AlertApp {
         System.out.println("Account ID:" + myAccount.getId());
         System.out.println("Name:" + myAccount.getName());
         System.out.println("Alerts:" + myAccount.getAlerts());
-        editAccountInformation();
+
+        System.out.println("DO YOU WISH TO MAKE CHANGES TO YOUR ACCOUNT? ANSWER YES OR NO");
+        String answer = input.nextLine();
+
+        if (answer.equals("YES")) {
+            editAccountInformation();
+        }
     }
+
 
     private void editAccountInformation() {
         System.out.println("ACCOUNT ID CANNOT BE CHANGED; TYPE NAME TO CHANGE NAME, TYPE ALERTS TO VIEW ALL ALERTS.");
