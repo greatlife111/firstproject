@@ -85,6 +85,7 @@ public class Alert {
     // EFFECTS: changes the date of the alert
     public void changeDate(LocalDateTime d) {
         date = d;
+        calculateNotifications(this.createdDate, d, this.repeat);
     }
 
     // REQUIRES: none
@@ -99,6 +100,7 @@ public class Alert {
     // EFFECTS: changes the amount of times an alert repeat
     public void changeRepeat(int repeat) {
         this.repeat = repeat;
+        calculateNotifications(this.createdDate, this.date, repeat);
     }
 
     public LocalDateTime getFutureDate() {

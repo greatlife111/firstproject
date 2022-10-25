@@ -46,4 +46,8 @@ on the date.
 - As a user, I want to be able to delete a due alert.
 - As a user, I want to be able to edit account information and alert details.
 
+## PHASE TWO 
+- As a user, I want to be able to save all the alerts created and notifications corresponding to each of the alert
+- As a user, when I start the application, I want to be given the option to load my notifications list and alert list.
+
 
