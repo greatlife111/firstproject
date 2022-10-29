@@ -47,11 +47,11 @@ public class JsonReader {
 
     // EFFECTS: parses account from JSON object and returns it
     private Account parseAccount(JSONObject jsonObject) {
-        String id = jsonObject.getString("id");
+        Integer id = jsonObject.getInt("id");
         String name = jsonObject.getString("name");
         JSONObject alerts = jsonObject.getJSONObject("alertlist");
 
-        Account acc = new Account(Integer.parseInt(id), name, parseAlertList(alerts));
+        Account acc = new Account(id, name, parseAlertList(alerts));
 
         return acc;
     }

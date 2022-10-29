@@ -28,9 +28,10 @@ public class JsonWriterTest extends JsonTestAlert{
     }
 
     @Test
-    void testWriterEmptyWorkroom() {
+    void testWriterEmptyAccount() {
         try {
-            Account acc = new Account(5998, "spring", null);
+            AlertList alertlist = new AlertList();
+            Account acc = new Account(5998, "spring", alertlist);
             JsonWriter writer = new JsonWriter("./data/testWriterEmptyAccount.json");
             writer.open();
             writer.write(acc);
@@ -38,7 +39,7 @@ public class JsonWriterTest extends JsonTestAlert{
 
             JsonReader reader = new JsonReader("./data/testWriterEmptyAccount.json");
             acc = reader.read();
-            assertEquals("5998", acc.getId());
+            assertEquals(5998, acc.getId());
             assertEquals("spring", acc.getName());
             assertEquals(0, acc.getAlerts().getSize());
         } catch (IOException e) {
@@ -52,10 +53,10 @@ public class JsonWriterTest extends JsonTestAlert{
             AlertList alertList = new AlertList();
             Account acc = new Account(5998, "springg", alertList);
 
-            alertList.addAlert(new Alert(LocalDateTime.of(2022, 10, 30, 10, 0),
-                    "phase 1", 1));
-            alertList.addAlert(new Alert(LocalDateTime.of(2022, 10, 30, 10, 0),
-                    "phase 2", 2));
+            LocalDateTime fora1 = LocalDateTime.of(2022, 10, 30, 10, 0);
+            LocalDateTime fora2 = LocalDateTime.of(2022, 10, 31, 10, 0);
+            alertList.addAlert(new Alert(fora1,"phase 1", 1));
+            alertList.addAlert(new Alert(fora2,"phase 2", 2));
             JsonWriter writer = new JsonWriter("./data/testWriterGeneralAccount.json");
             writer.open();
             writer.write(acc);
