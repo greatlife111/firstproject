@@ -48,7 +48,7 @@ public class JsonWriterTest extends JsonTestAlert{
     }
 
     @Test
-    void testWriterGeneralWorkroom() {
+    void testWriterGeneralAccount() {
         try {
             AlertList alertList = new AlertList();
             Account acc = new Account(5998, "springg", alertList);
