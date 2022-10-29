@@ -17,7 +17,8 @@ public class JsonWriterTest extends JsonTestAlert{
 
     void testWriterInvalidFile() {
         try {
-            assertEquals("my account", );
+            Account account = new Account(5998, "l", null);
+            assertEquals(5998, account.getId());
             JsonWriter writer = new JsonWriter("./data/my\0illegal:fileName.json");
             writer.open();
             fail("IOException was expected");

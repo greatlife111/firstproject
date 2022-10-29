@@ -49,8 +49,9 @@ public class JsonReader {
     private Account parseAccount(JSONObject jsonObject) {
         String id = jsonObject.getString("id");
         String name = jsonObject.getString("name");
+        JSONObject alerts = jsonObject.getJSONObject("alertlist");
 
-        Account acc = new Account(Integer.parseInt(id), name, parseAlertList(jsonObject.getJSONObject("alertlist")));
+        Account acc = new Account(Integer.parseInt(id), name, parseAlertList(alerts));
 
         return acc;
     }

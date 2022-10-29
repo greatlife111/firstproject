@@ -30,7 +30,7 @@ public class AlertApp {
         String name = input.nextLine();
 
 
-        myAccount = new Account(5211314, name, new AlertList());
+        myAccount = new Account(5998, name, new AlertList());
 
         System.out.println("Welcome " + name + "!");
         while (keepGoing) {
