@@ -1,6 +1,9 @@
 package model;
 
 
+import org.json.JSONObject;
+import persistance.Writable;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -8,7 +11,7 @@ import java.util.List;
 
 
 // A class that includes all fields of an Alert
-public class Alert {
+public class Alert implements Writable {
     private List<LocalDateTime> notifications; // List of dates where an alert will be notified
     private LocalDateTime date;        // due date of the alert
     private String due;                // name of alert
@@ -85,7 +88,7 @@ public class Alert {
     // EFFECTS: changes the date of the alert
     public void changeDate(LocalDateTime d) {
         date = d;
-        calculateNotifications(this.createdDate, d, this.repeat);
+        calculateNotifications(createdDate, d, repeat);
     }
 
     // REQUIRES: none
@@ -100,7 +103,7 @@ public class Alert {
     // EFFECTS: changes the amount of times an alert repeat
     public void changeRepeat(int repeat) {
         this.repeat = repeat;
-        calculateNotifications(this.createdDate, this.date, repeat);
+        calculateNotifications(createdDate, date, repeat);
     }
 
     public LocalDateTime getFutureDate() {
@@ -123,5 +126,14 @@ public class Alert {
         return createdDate;
     }
 
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("date", date);
+        json.put("due", due);
+        json.put("repeat", repeat);
+        return json;
+    }
 
 }

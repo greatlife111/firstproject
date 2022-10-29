@@ -1,10 +1,14 @@
 package model;
 
+import org.json.JSONObject;
+import persistance.Writable;
+
 // represents an account having an id, name, and list of alerts.
-public class Account {
+public class Account implements Writable {
     private final int id;
     private String name;
     private AlertList alerts;
+
 
     // REQUIRES: a name of non-zero length
     // MODIFIES: none
@@ -15,6 +19,7 @@ public class Account {
         this.name = name;
         this.alerts = alerts;
     }
+
 
     public int getId() {
         return id;
@@ -34,7 +39,15 @@ public class Account {
     public void changeName(String s) {
         name = s;
     }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("id", id);
+        json.put("name", name);
+        json.put("alertlist", alerts.toJson());
+
+        return json;
+    }
 }
-
-
 

@@ -65,12 +65,10 @@ public class TestAlertList {
     void testBeforeDate() {
         list1.addAlert(alert1);
         list1.addAlert(alert2);
-        list1.viewAlertBeforeDate(alert2.getFutureDate());
-        assertTrue(list1.getAlertListBeforeDate().contains(alert1));
-        assertEquals(1, list1.getAlertListBeforeDate().size());
+        assertTrue(list1.viewAlertBeforeDate(alert2.getFutureDate()).contains(alert1));
+        assertEquals(1, list1.viewAlertBeforeDate(alert2.getFutureDate()).size());
 
-        list1.viewAlertBeforeDate(alert1.getFutureDate());
-        assertEquals(0, list1.getAlertListBeforeDate().size());
+        assertEquals(0, list1.viewAlertBeforeDate(alert1.getFutureDate()).size());
     }
 
     @Test

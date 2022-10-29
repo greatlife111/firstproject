@@ -3,14 +3,19 @@ package ui;
 import model.Account;
 import model.Alert;
 import model.AlertList;
+import persistance.JsonReader;
+import persistance.JsonWriter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class AlertApp {
+    private static final String JSON_STORE = "./data/alertlist.json";
     private final Scanner input;
     private Account myAccount;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
     public AlertApp() {
         input = new Scanner(System.in);
@@ -120,22 +125,25 @@ public class AlertApp {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime day = LocalDateTime.parse(newDate, dateFormat);
         alert.changeDate(day);
+        System.out.println("CHANGE SUCCESSFUL");
     }
 
     private void changeRepeat(Alert alert) {
         System.out.println("HOW MANY TIMES WOULD THE ALERT REPEAT?");
         String repeat = input.nextLine();
         alert.changeRepeat(Integer.parseInt(repeat));
+        System.out.println("CHANGE SUCCESSFUL");
     }
 
 
     private void accountInformation() {
         System.out.println("Account ID:" + myAccount.getId());
         System.out.println("Name:" + myAccount.getName());
-        System.out.println("Alerts:" + myAccount.getAlerts());
+        System.out.println("Alerts:");
+        viewAllAlerts();
 
         System.out.println("DO YOU WISH TO MAKE CHANGES TO YOUR ACCOUNT? ANSWER YES OR NO");
-        String answer = input.nextLine();
+        String answer = input.nextLine().toUpperCase();
 
         if (answer.equals("YES")) {
             editAccountInformation();
@@ -230,10 +238,10 @@ public class AlertApp {
         if (myAccount.getAlerts().isEmpty()) {
             System.out.println("NOTHING FOR NOW!");
         } else {
-            for (Alert a : myAccount.getAlerts().getList()) {
-                System.out.println("Alert name:" + a.getDueName());
-                System.out.println("Due time:" + a.getFutureDate());
-                System.out.println("Repeat:" + a.getRepeat());
+            for (int i = 0; i < myAccount.getAlerts().getSize(); i++) {
+                System.out.println("Alert name:" + myAccount.getAlerts().getList().get(i).getDueName());
+                System.out.println("Due time:" + myAccount.getAlerts().getList().get(i).getFutureDate());
+                System.out.println("Repeat:" + myAccount.getAlerts().getList().get(i).getRepeat());
             }
         }
     }

@@ -1,15 +1,19 @@
 package model;
 
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistance.Writable;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 // A class that contains the list of all alerts an account has starting from current time
-public class AlertList {
+public class AlertList implements Writable {
 
     private List<Alert> list;
-    private List<Alert> alertListBeforeDate;
+
 
     //Constructor that creates an empty AlertList ArrayList
     public AlertList() {
@@ -17,13 +21,10 @@ public class AlertList {
     }
 
 
-    public List<Alert> getAlertListBeforeDate() {
-        return alertListBeforeDate;
-    }
-
     public List<Alert> getList() {
         return list;
     }
+
 
     // REQUIRES: none
     // MODIFIES: none
@@ -63,6 +64,7 @@ public class AlertList {
     // MODIFIES: none
     // EFFECTS: outputs list of alerts before input date
     public List<Alert> viewAlertBeforeDate(LocalDateTime d) {
+        List<Alert> alertListBeforeDate;
         alertListBeforeDate = new ArrayList<>();
         for (Alert a : list) {
             if (a.getFutureDate().isBefore(d)) {
@@ -109,4 +111,20 @@ public class AlertList {
     }
 
 
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("list", alertListToJson());
+        return json;
+    }
+
+    private JSONArray alertListToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Alert alert : list) {
+            jsonArray.put(alert.toJson());
+        }
+
+        return jsonArray;
+    }
 }
