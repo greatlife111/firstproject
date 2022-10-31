@@ -15,14 +15,14 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class AlertApp {
-    private static final String JSON_STORE = "./data/alertlist.json";
+    private static final String JSON_STORE = "./data/MyAlertList.json";
     private final Scanner input;
     private Account myAccount;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
     Map<String, Runnable> exeMap;
 
-    public AlertApp() {
+    public AlertApp() throws FileNotFoundException {
         input = new Scanner(System.in);
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
@@ -41,8 +41,9 @@ public class AlertApp {
         exeMap.put("G", this::confirmNotification);
         exeMap.put("H", this::accountInformation);
         exeMap.put("I", this::alertDetails);
-        exeMap.put("J", this::saveAccount);
-        exeMap.put("K", this::loadAccount);
+        exeMap.put("J", this::editAlertDetails);
+        exeMap.put("K", this::saveAccount);
+        exeMap.put("L", this::loadAccount);
     }
 
 
@@ -96,7 +97,7 @@ public class AlertApp {
             jsonWriter.open();
             jsonWriter.write(myAccount);
             jsonWriter.close();
-            System.out.println("Saved " + myAccount.getName() + "'s account to " + JSON_STORE);
+            System.out.println("New changes saved to" + JSON_STORE);
         } catch (FileNotFoundException e) {
             System.out.println("Unable to write to file: " + JSON_STORE);
         }
@@ -112,13 +113,6 @@ public class AlertApp {
                 System.out.println("DUE TIME:" + alert.getFutureDate());
                 System.out.println("REPEAT TIMES:" + alert.getRepeat());
             }
-        }
-
-        System.out.println("DO YOU WISH TO MAKE CHANGES TO YOUR ALERT? ANSWER YES OR NO");
-        String answer = input.nextLine().toUpperCase();
-
-        if (answer.equals("YES")) {
-            editAlertDetails();
         }
     }
 
@@ -258,7 +252,8 @@ public class AlertApp {
         System.out.println("HOW MANY DAYS?");
         String day = input.nextLine();
 
-        if (myAccount.getAlerts().isEmpty()) {
+        if (myAccount.getAlerts().isEmpty()
+                || myAccount.getAlerts().viewAlertNextDays(Integer.parseInt(day)).isEmpty()) {
             System.out.println("NOTHING FOR NOW!");
         } else {
             for (Alert a : myAccount.getAlerts().viewAlertNextDays(Integer.parseInt(day))) {
@@ -324,7 +319,9 @@ public class AlertApp {
         System.out.println("G: CONFIRM NOTIFICATION");
         System.out.println("H: ACCOUNT INFORMATION");
         System.out.println("I: VIEW ALERT DETAILS");
-        System.out.println("J: SAVE YOUR ACCOUNT");
+        System.out.println("J: EDIT ALERT DETAILS");
+        System.out.println("K: SAVE YOUR ACCOUNT");
+        System.out.println("L: LOAD YOUR ACCOUNT");
         System.out.println("Q: QUIT");
     }
 }
