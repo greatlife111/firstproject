@@ -77,11 +77,12 @@ public class JsonReader {
     // EFFECTS: parses alert from JSON object and adds it to alertlist
     private void addAlert(AlertList alertlist, JSONObject jsonObject) {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime createdDate = LocalDateTime.parse(jsonObject.getString("created"), dateFormat);
         LocalDateTime dueTime = LocalDateTime.parse(jsonObject.getString("date"), dateFormat);
         String due = jsonObject.getString("due");
-        int repeat = Integer.parseInt(jsonObject.getString("repeat"));
+        int repeat = jsonObject.getInt("repeat");
 
-        Alert alert = new Alert(dueTime, due, repeat);
+        Alert alert = new Alert(createdDate, dueTime, due, repeat);
         alertlist.addAlert(alert);
     }
 }

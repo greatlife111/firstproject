@@ -6,8 +6,12 @@ import model.AlertList;
 import persistance.JsonReader;
 import persistance.JsonWriter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class AlertApp {
@@ -16,11 +20,31 @@ public class AlertApp {
     private Account myAccount;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
+    Map<String, Runnable> exeMap;
 
     public AlertApp() {
         input = new Scanner(System.in);
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
+        exeMap = new HashMap<>();
+        initExeMap();
         runAlertApp();
     }
+
+    void initExeMap() {
+        exeMap.put("A", this::addAlert);
+        exeMap.put("B", this::deleteAlert);
+        exeMap.put("C", this::viewAllAlerts);
+        exeMap.put("D", this::viewNextDays);
+        exeMap.put("E", this::viewNotifications);
+        exeMap.put("F", this::viewOnTheDay);
+        exeMap.put("G", this::confirmNotification);
+        exeMap.put("H", this::accountInformation);
+        exeMap.put("I", this::alertDetails);
+        exeMap.put("J", this::saveAccount);
+        exeMap.put("K", this::loadAccount);
+    }
+
 
     public void runAlertApp() {
         boolean keepGoing = true;
@@ -48,28 +72,33 @@ public class AlertApp {
     }
 
     private void processCommand(String command) {
-        if (command.equals("A")) {
-            addAlert();
-        } else if (command.equals("B")) {
-            deleteAlert();
-        } else if (command.equals("C")) {
-            viewAllAlerts();
-        } else if (command.equals("D")) {
-            viewNextDays();
-        } else if (command.equals("E")) {
-            viewNotifications();
-        } else if (command.equals("F")) {
-            viewOnTheDay();
-        } else if (command.equals("G")) {
-            confirmNotification();
-        } else if (command.equals("H")) {
-            accountInformation();
-        } else if (command.equals("I")) {
-            alertDetails();
-        } else if (command.equals("J")) {
-            editAlertDetails();
+        Runnable func = exeMap.get(command);
+        if (func != null) {
+            func.run();
         } else {
             System.out.println("SELECTION INVALID");
+
+        }
+    }
+
+
+    private void loadAccount() {
+        try {
+            myAccount = jsonReader.read();
+            System.out.println("Loaded " + myAccount.getName() + "'s account from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
+        }
+    }
+
+    private void saveAccount() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(myAccount);
+            jsonWriter.close();
+            System.out.println("Saved " + myAccount.getName() + "'s account to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
         }
     }
 
@@ -83,6 +112,13 @@ public class AlertApp {
                 System.out.println("DUE TIME:" + alert.getFutureDate());
                 System.out.println("REPEAT TIMES:" + alert.getRepeat());
             }
+        }
+
+        System.out.println("DO YOU WISH TO MAKE CHANGES TO YOUR ALERT? ANSWER YES OR NO");
+        String answer = input.nextLine().toUpperCase();
+
+        if (answer.equals("YES")) {
+            editAlertDetails();
         }
     }
 
@@ -288,7 +324,7 @@ public class AlertApp {
         System.out.println("G: CONFIRM NOTIFICATION");
         System.out.println("H: ACCOUNT INFORMATION");
         System.out.println("I: VIEW ALERT DETAILS");
-        System.out.println("J: EDIT ALERT DETAILS");
+        System.out.println("J: SAVE YOUR ACCOUNT");
         System.out.println("Q: QUIT");
     }
 }

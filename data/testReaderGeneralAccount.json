@@ -1,16 +1,18 @@
 {
-  "id": "5998",
-  "name": "springg",
-  "alertlist": [
+  "name": "spring",
+  "alertlist": {"list": [
     {
-      "date": "2022-10-30 10:00",
-      "due": "phase 1",
-      "repeat": "1"
+      "date": "2022-11-02 10:00",
+      "due": "ALERT1",
+      "created": "2022-10-30 17:20",
+      "repeat": 1
     },
     {
-      "date": "2022-10-31 10:00",
-      "due": "phase 2",
-      "repeat": "2"
+      "date": "2022-11-01 10:00",
+      "due": "ALERT2",
+      "created": "2022-10-30 17:21",
+      "repeat": 3
     }
-  ]
+  ]},
+  "id": 5998
 }

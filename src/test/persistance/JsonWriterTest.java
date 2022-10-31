@@ -15,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class JsonWriterTest extends JsonTestAlert{
 
+    @Test
     void testWriterInvalidFile() {
         try {
             Account account = new Account(5998, "l", null);
-            assertEquals(5998, account.getId());
             JsonWriter writer = new JsonWriter("./data/my\0illegal:fileName.json");
             writer.open();
             fail("IOException was expected");
@@ -51,12 +51,16 @@ public class JsonWriterTest extends JsonTestAlert{
     void testWriterGeneralAccount() {
         try {
             AlertList alertList = new AlertList();
-            Account acc = new Account(5998, "springg", alertList);
+            Account acc = new Account(5998, "spring", alertList);
 
-            LocalDateTime fora1 = LocalDateTime.of(2022, 10, 30, 10, 0);
-            LocalDateTime fora2 = LocalDateTime.of(2022, 10, 31, 10, 0);
-            alertList.addAlert(new Alert(fora1,"phase 1", 1));
-            alertList.addAlert(new Alert(fora2,"phase 2", 2));
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime dueTime1 = LocalDateTime.parse("2022-11-02 10:00", dateFormat);
+            LocalDateTime createdDate1 = LocalDateTime.parse("2022-10-30 17:20", dateFormat);
+            LocalDateTime dueTime2 = LocalDateTime.parse("2022-11-01 10:00", dateFormat);
+            LocalDateTime createdDate2 = LocalDateTime.parse("2022-10-30 17:21", dateFormat);
+
+            alertList.addAlert(new Alert(createdDate1, dueTime1,"ALERT1", 1));
+            alertList.addAlert(new Alert(createdDate2, dueTime2,"ALERT2", 3));
             JsonWriter writer = new JsonWriter("./data/testWriterGeneralAccount.json");
             writer.open();
             writer.write(acc);
@@ -65,16 +69,14 @@ public class JsonWriterTest extends JsonTestAlert{
             JsonReader reader = new JsonReader("./data/testWriterGeneralAccount.json");
             acc = reader.read();
             assertEquals(5998, acc.getId());
-            assertEquals("springg", acc.getName());
-            List<Alert> alerts = alertList.getList();
+            assertEquals("spring", acc.getName());
+            List<Alert> alert = alertList.getList();
             assertEquals(2, acc.getAlerts().getSize());
 
-            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime dueTime1 = LocalDateTime.parse("2022-10-30 10:00", dateFormat);
-            checkAlert(dueTime1, "phase 1", 1, alerts.get(0));
 
-            LocalDateTime dueTime2 = LocalDateTime.parse("2022-10-31 10:00", dateFormat);
-            checkAlert(dueTime2, "phase 2", 2, alerts.get(1));
+            checkAlert(createdDate1, dueTime1, "ALERT1", 1, alert.get(0));
+
+            checkAlert(createdDate2, dueTime2, "ALERT2", 3, alert.get(1));
 
         } catch (IOException e) {
             fail("Exception should not have been thrown");

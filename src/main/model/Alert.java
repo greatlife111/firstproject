@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import persistance.Writable;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,7 @@ public class Alert implements Writable {
     // EFFECTS: changes the date of the alert
     public void changeDate(LocalDateTime d) {
         date = d;
-        calculateNotifications(createdDate, d, repeat);
+        this.notifications = calculateNotifications(createdDate, d, repeat);
     }
 
     // REQUIRES: none
@@ -103,7 +104,7 @@ public class Alert implements Writable {
     // EFFECTS: changes the amount of times an alert repeat
     public void changeRepeat(int repeat) {
         this.repeat = repeat;
-        calculateNotifications(createdDate, date, repeat);
+        this.notifications = calculateNotifications(createdDate, date, repeat);
     }
 
     public LocalDateTime getFutureDate() {
@@ -130,7 +131,8 @@ public class Alert implements Writable {
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("date", date);
+        json.put("created", createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        json.put("date", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         json.put("due", due);
         json.put("repeat", repeat);
         return json;

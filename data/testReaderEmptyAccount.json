@@ -1,6 +1,5 @@
 {
-  "id" : "5998",
-  "name" : "spring",
-  "alertlist": []
-
+  "name": "spring",
+  "alertlist": {"list": []},
+  "id": 5998
 }
