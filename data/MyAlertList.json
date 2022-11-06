@@ -1,18 +1,10 @@
 {
-    "name": "lyq",
-    "alertlist": {"list": [
-        {
-            "date": "2022-11-07 18:00",
-            "due": "CPSC 210 MT",
-            "created": "2022-10-30 18:05",
-            "repeat": 2
-        },
-        {
-            "date": "2022-11-02 10:00",
-            "due": "MATH 221 MT",
-            "created": "2022-10-30 18:05",
-            "repeat": 3
-        }
-    ]},
+    "name": "Jenna",
+    "alertlist": {"list": [{
+        "date": "2022-11-03 20:05",
+        "due": "WAKE THE FUCK UP!",
+        "created": "2022-11-03 20:03",
+        "repeat": 2
+    }]},
     "id": 5998
 }

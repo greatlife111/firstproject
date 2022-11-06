@@ -22,6 +22,7 @@ public class AlertApp {
     private JsonReader jsonReader;
     Map<String, Runnable> exeMap;
 
+    // EFFECTS: runs the map and application
     public AlertApp() throws FileNotFoundException {
         input = new Scanner(System.in);
         jsonWriter = new JsonWriter(JSON_STORE);
@@ -31,6 +32,7 @@ public class AlertApp {
         runAlertApp();
     }
 
+    // EFFECTS: Assign each command to a specific key
     void initExeMap() {
         exeMap.put("A", this::addAlert);
         exeMap.put("B", this::deleteAlert);
@@ -47,6 +49,8 @@ public class AlertApp {
     }
 
 
+    // MODIFIES: this
+    // EFFECTS: processes user input
     public void runAlertApp() {
         boolean keepGoing = true;
         String command = null;
@@ -72,6 +76,8 @@ public class AlertApp {
         System.out.println("STOP PROCRASTINATING -_-");
     }
 
+    // MODIFIES: this
+    // EFFECTS: processes user command
     private void processCommand(String command) {
         Runnable func = exeMap.get(command);
         if (func != null) {
@@ -82,7 +88,8 @@ public class AlertApp {
         }
     }
 
-
+    // MODIFIES: this
+    // EFFECTS: loads account from file
     private void loadAccount() {
         try {
             myAccount = jsonReader.read();
@@ -92,6 +99,7 @@ public class AlertApp {
         }
     }
 
+    // EFFECTS: saves the account to file
     private void saveAccount() {
         try {
             jsonWriter.open();
@@ -103,7 +111,7 @@ public class AlertApp {
         }
     }
 
-
+    // EFFECTS: prompts user for alert name and display alert details
     private void alertDetails() {
         System.out.println("WHAT IS THE ALERT NAME?");
         String alertName = input.nextLine().toUpperCase();
@@ -116,6 +124,8 @@ public class AlertApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: prompt the user to change alert details
     private void editAlertDetails() {
         System.out.println("TYPE THE ALERT NAME YOU WOULD LIKE TO CHANGE");
         String name = input.nextLine().toUpperCase();
@@ -142,12 +152,16 @@ public class AlertApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: changes the alert name of input alert
     private void changeAlertName(Alert alert) {
         System.out.println("WHAT IS THE NEW ALERT NAME?");
         String newName = input.nextLine().toUpperCase();
         alert.changeDue(newName);
     }
 
+    // MODIFIES: this
+    // EFFECTS: changes the due date of input alert
     private void changeAlertDueDate(Alert alert) {
         System.out.println("WHAT IS THE NEW DATE?");
         System.out.println("ANSWER IN yyyy-MM-dd (space) HH:mm");
@@ -158,6 +172,8 @@ public class AlertApp {
         System.out.println("CHANGE SUCCESSFUL");
     }
 
+    // MODIFIES: this
+    // EFFECTS: changes the repeat times of input alert
     private void changeRepeat(Alert alert) {
         System.out.println("HOW MANY TIMES WOULD THE ALERT REPEAT?");
         String repeat = input.nextLine();
@@ -165,7 +181,7 @@ public class AlertApp {
         System.out.println("CHANGE SUCCESSFUL");
     }
 
-
+    // EFFECTS: displays account information for user
     private void accountInformation() {
         System.out.println("Account ID:" + myAccount.getId());
         System.out.println("Name:" + myAccount.getName());
@@ -181,6 +197,8 @@ public class AlertApp {
     }
 
 
+    // MODIFIES: this
+    // EFFECTS: prompts user to edit account information
     private void editAccountInformation() {
         System.out.println("ACCOUNT ID CANNOT BE CHANGED; TYPE NAME TO CHANGE NAME, TYPE ALERTS TO VIEW ALL ALERTS.");
         String change = input.nextLine().toUpperCase();
@@ -194,6 +212,8 @@ public class AlertApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: prompts the user to confirm a notification in notification list
     private void confirmNotification() {
         System.out.println("CONFIRM THE NOTIFICATION BY TYPING ALERT NAME");
         String name = input.nextLine().toUpperCase();
@@ -309,6 +329,7 @@ public class AlertApp {
         }
     }
 
+    // EFFECTS: displays menu of options to user
     private void displayFunctions() {
         System.out.println("A: ADD AN ALERT");
         System.out.println("B: DELETE AN ALERT");
