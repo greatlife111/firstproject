@@ -238,7 +238,7 @@ public class AlertApp {
         }
     }
 
-
+    // EFFECTS: displays all alerts on input date
     private void viewOnTheDay() {
         System.out.println("ENTER THE DATE IN THE FORMAT yyyy-MM-dd");
         String date = input.nextLine();
@@ -253,7 +253,7 @@ public class AlertApp {
         }
     }
 
-
+    // EFFECTS: displays all notifications
     private void viewNotifications() {
         boolean thereIsNothing = true;
         for (Alert a : myAccount.getAlerts().getList()) {
@@ -268,6 +268,7 @@ public class AlertApp {
         }
     }
 
+    // EFFECTS: displays all alerts in the next input days
     private void viewNextDays() {
         System.out.println("HOW MANY DAYS?");
         String day = input.nextLine();
@@ -285,6 +286,7 @@ public class AlertApp {
 
     }
 
+    // EFFECTS: displays all alerts added
     private void viewAllAlerts() {
         if (myAccount.getAlerts().isEmpty()) {
             System.out.println("NOTHING FOR NOW!");
@@ -297,12 +299,16 @@ public class AlertApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: delete an alert in the existing alert list
     private void deleteAlert() {
         System.out.println("ENTER ALERT NAME");
         String alertName = input.nextLine().toUpperCase();
         myAccount.getAlerts().removeAlert(alertName);
     }
 
+    // MODIFIES: this
+    // EFFECTS: add an alert to the alert list
     private void addAlert() {
         System.out.println("ENTER ALERT NAME");
         String alertName = input.nextLine().toUpperCase();
