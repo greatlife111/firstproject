@@ -4,6 +4,7 @@ package model;
 import org.json.JSONObject;
 import persistance.Writable;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -23,37 +24,46 @@ public class Alert implements Writable {
     //REQUIRES: none
     //MODIFIES: none
     //EFFECTS: uses method overload to create an alert at current time
-    public Alert(LocalDateTime date, String due, int repeat) {
+    public Alert(LocalDateTime date, String due, int repeat) throws NumberFormatException {
         this(LocalDateTime.now(), date, due, repeat);
+        if (repeat < 0) {
+            throw new NumberFormatException();
+        }
     }
 
     //REQUIRES: due is of non-zero length
     //MODIFIES: none
     //EFFECTS: creates an alert with starting time of createdDated; due date of the alert is set to input
     //         LocalDateTime date; alert name is set to input due; How many times the alert repeat is set to int repeat.
-    public Alert(LocalDateTime createdDate, LocalDateTime date, String due, int repeat) {
+    public Alert(LocalDateTime createdDate, LocalDateTime date, String due, int repeat) throws NumberFormatException {
+        if (repeat < 0) {
+            throw new NumberFormatException();
+        }
         this.date = date;
         this.due = due;
-        this.repeat = repeat;
         this.createdDate = createdDate;
+        this.repeat = repeat;
         this.notifications = calculateNotifications(createdDate, date, repeat);
     }
 
-    // REQUIRES: repeat is at least 1
+    // REQUIRES: none
     // MODIFIES: this
     // EFFECTS: return specific dates(type LocalDateTime) when the alert will be notified as an arraylist
     public List<LocalDateTime> calculateNotifications(LocalDateTime createdDate,
                                                       LocalDateTime finalAlertTime, int repeat) {
         List<LocalDateTime> notificationList;
         notificationList = new ArrayList<>();
+        if (repeat == 0) {
+            return notificationList;
+        } else {
+            long deltaTime = ChronoUnit.NANOS.between(createdDate, finalAlertTime) / repeat;
 
-        long deltaTime = ChronoUnit.NANOS.between(createdDate, finalAlertTime) / repeat;
-
-        for (LocalDateTime now = createdDate.plusNanos(deltaTime);
-                now.isBefore(finalAlertTime) || now.isEqual(finalAlertTime); now = now.plusNanos(deltaTime)) {
-            notificationList.add(now);
+            for (LocalDateTime now = createdDate.plusNanos(deltaTime);
+                    now.isBefore(finalAlertTime) || now.isEqual(finalAlertTime); now = now.plusNanos(deltaTime)) {
+                notificationList.add(now);
+            }
+            return notificationList;
         }
-        return notificationList;
     }
 
     // REQUIRES: none
@@ -87,24 +97,36 @@ public class Alert implements Writable {
     //           00 and 59
     // MODIFIES: this
     // EFFECTS: changes the date of the alert
-    public void changeDate(LocalDateTime d) {
-        date = d;
-        this.notifications = calculateNotifications(createdDate, d, repeat);
+    public void changeDate(LocalDateTime d) throws DateTimeException {
+        if (d.isEqual(LocalDateTime.now()) || d.isBefore(LocalDateTime.now())) {
+            throw new DateTimeException("invalid");
+        } else {
+            date = d;
+            this.notifications = calculateNotifications(createdDate, d, repeat);
+        }
     }
 
     // REQUIRES: none
     // MODIFIES: this
     // EFFECTS: changes the name of the alert
-    public void changeDue(String due) {
-        this.due = due;
+    public void changeDue(String due) throws RuntimeException {
+        if (due.isEmpty()) {
+            throw new RuntimeException();
+        } else {
+            this.due = due;
+        }
     }
 
     // REQUIRES: none
     // MODIFIES: this
     // EFFECTS: changes the amount of times an alert repeat
-    public void changeRepeat(int repeat) {
-        this.repeat = repeat;
-        this.notifications = calculateNotifications(createdDate, date, repeat);
+    public void changeRepeat(int repeat) throws NumberFormatException {
+        if (repeat < 0) {
+            throw new NumberFormatException();
+        } else {
+            this.repeat = repeat;
+            this.notifications = calculateNotifications(createdDate, date, repeat);
+        }
     }
 
     public LocalDateTime getFutureDate() {

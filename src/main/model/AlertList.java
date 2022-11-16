@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import persistance.Writable;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,28 +78,37 @@ public class AlertList implements Writable {
     // REQUIRES: none
     // MODIFIES: none
     // EFFECTS: outputs list of alerts in the next d days
-    public List<Alert> viewAlertNextDays(int d, LocalDateTime now) {
+    public List<Alert> viewAlertNextDays(int d, LocalDateTime now) throws NumberFormatException {
         List<Alert> alertListOfNextDays;
         alertListOfNextDays = new ArrayList<>();
 
-        LocalDateTime endDate = now.plusDays(d + 1);
-        endDate = LocalDateTime.of(endDate.getYear(), endDate.getMonthValue(), endDate.getDayOfMonth(), 0, 0);
-        for (Alert a : list) {
-            if (a.getFutureDate().isBefore(endDate)) {
-                alertListOfNextDays.add(a);
+        if (d < 1) {
+            throw new NumberFormatException();
+        } else {
+
+            LocalDateTime endDate = now.plusDays(d + 1);
+            endDate = LocalDateTime.of(endDate.getYear(), endDate.getMonthValue(), endDate.getDayOfMonth(), 0, 0);
+            for (Alert a : list) {
+                if (a.getFutureDate().isBefore(endDate)) {
+                    alertListOfNextDays.add(a);
+                }
             }
+            return alertListOfNextDays;
         }
-        return alertListOfNextDays;
     }
 
-    public List<Alert> viewAlertNextDays(int d) {
-        return this.viewAlertNextDays(d, LocalDateTime.now());
+    public List<Alert> viewAlertNextDays(int d) throws NumberFormatException {
+        if (d < 1) {
+            throw new NumberFormatException();
+        } else {
+            return this.viewAlertNextDays(d, LocalDateTime.now());
+        }
     }
 
     // REQUIRES: none
     // MODIFIES: none
     // EFFECTS: displays all alerts on a given date
-    public List<Alert> viewAlertsOnTheDay(LocalDateTime d) {
+    public List<Alert> viewAlertsOnTheDay(LocalDateTime d) throws DateTimeException {
         List<Alert> alertListOfTheDay;
         alertListOfTheDay = new ArrayList<>();
         for (Alert a : list) {

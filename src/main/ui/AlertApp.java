@@ -8,6 +8,7 @@ import persistance.JsonWriter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -156,8 +157,13 @@ public class AlertApp {
     // EFFECTS: changes the alert name of input alert
     private void changeAlertName(Alert alert) {
         System.out.println("WHAT IS THE NEW ALERT NAME?");
-        String newName = input.nextLine().toUpperCase();
-        alert.changeDue(newName);
+        try {
+            String newName = input.nextLine().toUpperCase();
+            alert.changeDue(newName);
+            System.out.println("CHANGE SUCCESSFUL");
+        } catch (Exception ee) {
+            System.out.println("CHANGE UNSUCCESSFUL");
+        }
     }
 
     // MODIFIES: this
@@ -167,9 +173,13 @@ public class AlertApp {
         System.out.println("ANSWER IN yyyy-MM-dd (space) HH:mm");
         String newDate = input.nextLine();
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime day = LocalDateTime.parse(newDate, dateFormat);
-        alert.changeDate(day);
-        System.out.println("CHANGE SUCCESSFUL");
+        try {
+            LocalDateTime day = LocalDateTime.parse(newDate, dateFormat);
+            alert.changeDate(day);
+            System.out.println("CHANGE SUCCESSFUL");
+        } catch (DateTimeException ee) {
+            System.out.println("CHANGE UNSUCCESSFUL");
+        }
     }
 
     // MODIFIES: this
@@ -177,8 +187,12 @@ public class AlertApp {
     private void changeRepeat(Alert alert) {
         System.out.println("HOW MANY TIMES WOULD THE ALERT REPEAT?");
         String repeat = input.nextLine();
-        alert.changeRepeat(Integer.parseInt(repeat));
-        System.out.println("CHANGE SUCCESSFUL");
+        try {
+            alert.changeRepeat(Integer.parseInt(repeat));
+            System.out.println("CHANGE SUCCESSFUL");
+        } catch (NumberFormatException ee) {
+            System.out.println("CHANGE UNSUCCESSFUL");
+        }
     }
 
     // EFFECTS: displays account information for user
@@ -241,15 +255,19 @@ public class AlertApp {
     // EFFECTS: displays all alerts on input date
     private void viewOnTheDay() {
         System.out.println("ENTER THE DATE IN THE FORMAT yyyy-MM-dd");
-        String date = input.nextLine();
-        date += " 00:00";
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime theDay = LocalDateTime.parse(date, dateFormat);
+        try {
+            String date = input.nextLine();
+            date += " 00:00";
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime theDay = LocalDateTime.parse(date, dateFormat);
 
-        for (Alert a : myAccount.getAlerts().viewAlertsOnTheDay(theDay)) {
-            System.out.println("Alert name:" + a.getDueName());
-            System.out.println("Due time:" + a.getFutureDate());
-            System.out.println("Repeat:" + a.getRepeat());
+            for (Alert a : myAccount.getAlerts().viewAlertsOnTheDay(theDay)) {
+                System.out.println("Alert name:" + a.getDueName());
+                System.out.println("Due time:" + a.getFutureDate());
+                System.out.println("Repeat:" + a.getRepeat());
+            }
+        } catch (DateTimeException ee) {
+            System.out.println("INVALID INPUT DATE");
         }
     }
 
@@ -272,18 +290,20 @@ public class AlertApp {
     private void viewNextDays() {
         System.out.println("HOW MANY DAYS?");
         String day = input.nextLine();
-
-        if (myAccount.getAlerts().isEmpty()
-                || myAccount.getAlerts().viewAlertNextDays(Integer.parseInt(day)).isEmpty()) {
-            System.out.println("NOTHING FOR NOW!");
-        } else {
-            for (Alert a : myAccount.getAlerts().viewAlertNextDays(Integer.parseInt(day))) {
-                System.out.println("Alert name:" + a.getDueName());
-                System.out.println("Due time:" + a.getFutureDate());
-                System.out.println("Repeat:" + a.getRepeat());
+        try {
+            if (myAccount.getAlerts().isEmpty()
+                    || myAccount.getAlerts().viewAlertNextDays(Integer.parseInt(day)).isEmpty()) {
+                System.out.println("NOTHING FOR NOW!");
+            } else {
+                for (Alert a : myAccount.getAlerts().viewAlertNextDays(Integer.parseInt(day))) {
+                    System.out.println("Alert name:" + a.getDueName());
+                    System.out.println("Due time:" + a.getFutureDate());
+                    System.out.println("Repeat:" + a.getRepeat());
+                }
             }
+        } catch (NumberFormatException ee) {
+            System.out.println("INVALID INPUT DAYS");
         }
-
     }
 
     // EFFECTS: displays all alerts added
@@ -320,20 +340,26 @@ public class AlertApp {
                 System.out.println("ALERT NAME ALREADY EXISTS");
             }
         }
-
         if (alertDoesntExist) {
-            System.out.println("ENTER DATE AS yyyy-MM-dd (space) HH:mm");
-            String dueDate = input.nextLine();
-            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime dueTime = LocalDateTime.parse(dueDate, dateFormat);
+            try {
+                System.out.println("ENTER DATE AS yyyy-MM-dd (space) HH:mm");
+                String dueDate = input.nextLine();
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                LocalDateTime dueTime = LocalDateTime.parse(dueDate, dateFormat);
 
-            System.out.println("HOW MANY TIMES DO YOU WANT IT TO REPEAT? MINIMUM IS 1");
-            String repeat = input.nextLine();
+                System.out.println("HOW MANY TIMES DO YOU WANT IT TO REPEAT?");
+                String repeat = input.nextLine();
 
-            Alert theOneAdded = new Alert(dueTime, alertName, Integer.parseInt(repeat));
-            myAccount.getAlerts().addAlert(theOneAdded);
+                Alert theOneAdded = new Alert(dueTime, alertName, Integer.parseInt(repeat));
+                myAccount.getAlerts().addAlert(theOneAdded);
+
+            } catch (Exception ee) {
+                System.out.println("INVALID INPUT");
+            }
+
         }
     }
+
 
     // EFFECTS: displays menu of options to user
     private void displayFunctions() {

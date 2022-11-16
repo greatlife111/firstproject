@@ -20,11 +20,11 @@ public class TestAlertList {
     LocalDateTime foralert4;
 
     @BeforeEach
-    public void setup(){
-        foralert1 = LocalDateTime.of(2023, 9, 20, 1,1);
-        foralert2 = LocalDateTime.of(2023,10, 21, 1,1);
+    public void setup() {
+        foralert1 = LocalDateTime.of(2023, 9, 20, 1, 1);
+        foralert2 = LocalDateTime.of(2023, 10, 21, 1, 1);
         foralert3 = LocalDateTime.of(2022, 11, 22, 2, 2);
-        foralert4 = LocalDateTime.of(2023,10, 20, 1,1);
+        foralert4 = LocalDateTime.of(2023, 10, 20, 1, 1);
         list1 = new AlertList();
         alert1 = new Alert(foralert1, "alert1", 1);
         alert2 = new Alert(foralert2, "alert2", 2);
@@ -37,6 +37,7 @@ public class TestAlertList {
     void testIsEmpty() {
         assertTrue(list1.isEmpty());
         assertEquals(0, list1.getList().size());
+        assertEquals(0, list1.getSize());
     }
 
     @Test
@@ -72,7 +73,7 @@ public class TestAlertList {
     }
 
     @Test
-    void testAlertOfTheDay() {
+    void testAlertOfTheDaySuccess() {
         list1.addAlert(alert1);
         list1.addAlert(alert2);
         assertTrue(list1.viewAlertsOnTheDay(alert1.getFutureDate()).contains(alert1));
@@ -83,18 +84,44 @@ public class TestAlertList {
 
     @Test
     void testViewAlertNextDays() {
-        list1.addAlert(alert1);
-        list1.addAlert(alert2);
-        list1.addAlert(alert3);
-        LocalDateTime begin = LocalDateTime.of(2023,10,19,1,1);
-        assertEquals(2, list1.viewAlertNextDays(1, begin).size());
+        try {
+            list1.addAlert(alert1);
+            list1.addAlert(alert2);
+            list1.addAlert(alert3);
+            LocalDateTime begin = LocalDateTime.of(2023, 10, 19, 1, 1);
+            assertEquals(2, list1.viewAlertNextDays(1, begin).size());
+        } catch (NumberFormatException ee) {
+            fail("valid input");
+        }
+
+        try {
+            list1.addAlert(alert3);
+            LocalDateTime begin = LocalDateTime.of(2023, 10, 19, 1, 1);
+            list1.viewAlertNextDays(-1, begin);
+            fail("invalid input");
+        } catch (NumberFormatException ee) {
+            // pass
+        }
+
     }
 
     @Test
     void testViewAlertOverload() {
         Alert alert = new Alert(LocalDateTime.now().plusDays(1), "alert", 2);
-        list1.addAlert(alert);
-        assertEquals(1, list1.viewAlertNextDays(1).size());
+        try {
+            list1.addAlert(alert);
+            assertEquals(1, list1.viewAlertNextDays(1).size());
+        } catch (NumberFormatException ee) {
+            fail("valid input");
+        }
+
+        try {
+            list1.addAlert(alert);
+            list1.viewAlertNextDays(0);
+            fail("invalid input");
+        } catch (NumberFormatException ee) {
+            //
+        }
     }
 
 

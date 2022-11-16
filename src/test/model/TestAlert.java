@@ -3,15 +3,16 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestAlert {
 
     Alert alertModel;
+    Alert alertModel2;
     LocalDateTime futureAlertDate;
     LocalDateTime createdDate;
     LocalDateTime dateModel2;
@@ -24,43 +25,89 @@ class TestAlert {
         dateModel2 = LocalDateTime.of(2024, 10, 20, 17, 7);
         createdDate = LocalDateTime.of(2022, 10, 20, 17, 7);
         alertModel = new Alert(createdDate, futureAlertDate, "phase1", 2);
+        alertModel2 = new Alert(createdDate, futureAlertDate, "phase0", 0);
 
     }
 
     @Test
-    void testConstructor(){
-        Alert alert = new Alert(futureAlertDate, "phase 1", 3);
-        assertEquals(futureAlertDate, alert.getFutureDate());
-        assertEquals("phase 1", alert.getDueName());
-        assertEquals(3, alert.getRepeat());
+    void testConstructor() {
+        try {
+            Alert alert = new Alert(futureAlertDate, "phase 1", 3);
+            assertEquals(futureAlertDate, alert.getFutureDate());
+            assertEquals("phase 1", alert.getDueName());
+            assertEquals(3, alert.getRepeat());
+        } catch (NumberFormatException ee) {
+            fail();
+        }
+
+        try {
+            Alert alert = new Alert(futureAlertDate, "phase 1", -1);
+            fail();
+        } catch (NumberFormatException ee) {
+            //
+        }
     }
 
     @Test
     void testChangeDate() {
-        alertModel.changeDate(dateModel2);
+        try {
+            alertModel.changeDate(dateModel2);
+        } catch (DateTimeException ee) {
+            fail("valid input");
+        }
         assertEquals(dateModel2, alertModel.getFutureDate());
+
+        try {
+            alertModel.changeDate(createdDate);
+            fail("invalid input");
+        } catch (DateTimeException ee) {
+            // pass
+        }
     }
 
     @Test
-    void testChangeName(){
-        alertModel.changeDue("phase2");
-        assertEquals("phase2", alertModel.getDueName());
+    void testChangeName() {
+        try {
+            alertModel.changeDue("phase2");
+            assertEquals("phase2", alertModel.getDueName());
+        } catch (RuntimeException ee) {
+            fail("valid input");
+        }
+
+        try {
+            alertModel.changeDue("");
+            fail("invalid input");
+        } catch (RuntimeException ee) {
+            // pass
+        }
     }
 
     @Test
-    void testChangeRepeat(){
-        alertModel.changeRepeat(3);
+    void testChangeRepeat() {
+        try {
+            alertModel.changeRepeat(3);
+        } catch (NumberFormatException ee) {
+            fail("valid repeat");
+        }
+        assertEquals(3, alertModel.getRepeat());
+
+        try {
+            alertModel.changeRepeat(-1);
+            fail("invalid repeat");
+        } catch (NumberFormatException ee) {
+            // pass
+        }
         assertEquals(3, alertModel.getRepeat());
     }
 
     @Test
-    void testShouldBeNotifiedYes(){
+    void testShouldBeNotifiedYes() {
         assertTrue(alertModel.shouldBeNotified(futureAlertDate));
         assertTrue(alertModel.shouldBeNotified(futureAlertDate.plusDays(1)));
     }
 
     @Test
-    void testShouldBeNotifiedNo(){
+    void testShouldBeNotifiedNo() {
         assertFalse(alertModel.shouldBeNotified(createdDate));
         assertFalse(alertModel.shouldBeNotified(createdDate.plusDays(1)));
     }
@@ -87,7 +134,11 @@ class TestAlert {
     }
 
     @Test
-    void testCalculatingNotifications(){
+    void testCalculatingNotifications() {
+        alertModel2.calculateNotifications(alertModel2.getCreatedDate(), alertModel2.getFutureDate(),
+                alertModel2.getRepeat());
+        assertEquals(0, alertModel2.getNotifications().size());
+
         long deltaTime = ChronoUnit.NANOS.between(alertModel.getCreatedDate(), futureAlertDate) / alertModel.getRepeat();
 
         LocalDateTime firstRepeat = (alertModel.getCreatedDate().plusNanos(deltaTime));
