@@ -1,14 +1,11 @@
 package ui;
 
-import model.AlertList;
 
 import javax.swing.*;
 import java.awt.*;
 
 
 public class AlertGUI extends JFrame {
-
-    private AlertList alerts;
 
     public AlertGUI(String title) {
         super(title);
@@ -20,16 +17,10 @@ public class AlertGUI extends JFrame {
 
     public JPanel setMainPanel() {
         JPanel mainPanel = new JPanel();
-        mainPanel.add(setTabs());
+        mainPanel.setLayout(new BorderLayout(0,0));
+        mainPanel.add(setTabs(), BorderLayout.BEFORE_FIRST_LINE);
         mainPanel.setSize(500, 500);
         mainPanel.setVisible(true);
-//        mainPanel.setLayout(new BorderLayout(0,0));
-//
-//        JButton account = new JButton("ACCOUNT");
-//        mainPanel.add(account, BorderLayout.BEFORE_FIRST_LINE);
-//
-//        JButton quit = new JButton("QUIT");
-//        mainPanel.add(quit, BorderLayout.AFTER_LAST_LINE);
 
         return mainPanel;
     }
@@ -37,22 +28,33 @@ public class AlertGUI extends JFrame {
     public JTabbedPane setTabs() {
         JTabbedPane tabs = new JTabbedPane();
 
-        JComponent alertList = makeAlertlistPanel("my alerts");
-        JComponent notifications = makeNotificationsPanel();
-        JComponent others = makeCommands();
+        JComponent alertList = makeTestPanel("hi");
         tabs.addTab("Alert List", alertList);
+
+        JComponent notifications = makeTestPanel("hello");
         tabs.addTab("Notifications",notifications);
+
+        JComponent others = makeCommands();
         tabs.addTab("Others", others);
 
         return tabs;
+    }
+
+    private JComponent makeTestPanel(String s) {
+        JPanel panel = new JPanel(false);
+        JLabel filler = new JLabel(s);
+        filler.setHorizontalAlignment(JLabel.CENTER);
+        panel.setLayout(new GridLayout(1, 1));
+        panel.add(filler);
+        return panel;
     }
 
     private JComponent makeCommands() {
         JPanel commands = new JPanel();
         commands.setLayout(new CardLayout());
 
-        String[] comboBoxItems = { "Today", "Next __ Days", "Enter Date" };
-        JComboBox view = new JComboBox(comboBoxItems);
+        String[] comboBoxItems = { "CHOOSE OPTION", "Today", "Next __ Days", "Enter Date" };
+        JComboBox<String> view = new JComboBox<>(comboBoxItems);
         view.setEditable(false);
 
         JButton editAccount = new JButton();
@@ -61,20 +63,6 @@ public class AlertGUI extends JFrame {
         commands.add(editAccount, BorderLayout.PAGE_END);
 
         return commands;
-    }
-
-    private JComponent makeNotificationsPanel() {
-        JPanel notifications = new JPanel();
-        return notifications;
-    }
-
-    private JComponent makeAlertlistPanel(AlertList alerts) {
-
-        JPanel alertList = new JPanel(false);
-        JPanel filler = new JPanel(text);
-        alertList.setLayout(new GridLayout(1,1));
-        alertList.add(filler);
-        return alertList;
     }
 
     public static void main(String[] args) {
