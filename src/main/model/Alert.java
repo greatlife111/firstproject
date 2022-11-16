@@ -26,9 +26,6 @@ public class Alert implements Writable {
     //EFFECTS: uses method overload to create an alert at current time
     public Alert(LocalDateTime date, String due, int repeat) throws NumberFormatException {
         this(LocalDateTime.now(), date, due, repeat);
-        if (repeat < 0) {
-            throw new NumberFormatException();
-        }
     }
 
     //REQUIRES: due is of non-zero length

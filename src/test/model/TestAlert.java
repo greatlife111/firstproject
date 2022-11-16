@@ -63,6 +63,13 @@ class TestAlert {
         } catch (DateTimeException ee) {
             // pass
         }
+
+        try {
+            alertModel.changeDate(LocalDateTime.now());
+            fail("invalid input");
+        } catch (DateTimeException ee) {
+            // pass
+        }
     }
 
     @Test
