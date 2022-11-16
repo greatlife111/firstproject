@@ -8,6 +8,8 @@ import java.awt.*;
 
 public class AlertGUI extends JFrame {
 
+    private AlertList alerts;
+
     public AlertGUI(String title) {
         super(title);
 
@@ -66,7 +68,8 @@ public class AlertGUI extends JFrame {
         return notifications;
     }
 
-    private JComponent makeAlertlistPanel(String text) {
+    private JComponent makeAlertlistPanel(AlertList alerts) {
+
         JPanel alertList = new JPanel(false);
         JPanel filler = new JPanel(text);
         alertList.setLayout(new GridLayout(1,1));
