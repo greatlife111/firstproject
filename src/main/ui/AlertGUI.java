@@ -1,13 +1,20 @@
 package ui;
 
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 
 public class AlertGUI extends JFrame {
 
-    public AlertGUI(String title) {
+    public AlertGUI(String title) throws Exception {
         super(title);
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -15,9 +22,9 @@ public class AlertGUI extends JFrame {
         this.pack();
     }
 
-    public JPanel setMainPanel() {
+    public JPanel setMainPanel() throws Exception {
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout(0,0));
+        mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(setTabs(), BorderLayout.BEFORE_FIRST_LINE);
         mainPanel.setSize(500, 500);
         mainPanel.setVisible(true);
@@ -25,14 +32,14 @@ public class AlertGUI extends JFrame {
         return mainPanel;
     }
 
-    public JTabbedPane setTabs() {
+    public JTabbedPane setTabs() throws Exception {
         JTabbedPane tabs = new JTabbedPane();
 
-        JComponent alertList = makeTestPanel("hi");
+        JComponent alertList = makePanel(readAlertsAsString());
         tabs.addTab("Alert List", alertList);
 
-        JComponent notifications = makeTestPanel("hello");
-        tabs.addTab("Notifications",notifications);
+        JComponent notifications = makePanel((readNotificationsAsString()));
+        tabs.addTab("Notifications", notifications);
 
         JComponent others = makeCommands();
         tabs.addTab("Others", others);
@@ -40,20 +47,53 @@ public class AlertGUI extends JFrame {
         return tabs;
     }
 
-    private JComponent makeTestPanel(String s) {
+
+    private JComponent makePanel(String s) {
         JPanel panel = new JPanel(false);
-        JLabel filler = new JLabel(s);
-        filler.setHorizontalAlignment(JLabel.CENTER);
+        JTextField filler = new JTextField(s);
+        filler.setHorizontalAlignment(JTextField.LEFT);
+        filler.setEditable(false);
         panel.setLayout(new GridLayout(1, 1));
         panel.add(filler);
         return panel;
+    }
+
+    private String readAlertsAsString() throws Exception {
+        String s = "./data/MyAlertList.json";
+        String json = readFileAsString(s);
+
+        JSONObject j = new JSONObject(json);
+        JSONObject alertlist = j.getJSONObject("alertlist");
+
+        JSONArray list = alertlist.getJSONArray("list");
+        int length = list.length();
+
+        ArrayList<String> individualAlerts = new ArrayList<>();
+        for (int i = 0; i < length; i++) {
+            JSONObject o = list.getJSONObject(i);
+            String lineWithBreak = o.getString("date") + "\r";
+            individualAlerts.add(lineWithBreak);
+//            individualAlerts.add(System.lineSeparator());
+//            individualAlerts.add(o.toString() + System.lineSeparator());
+
+        }
+
+        return individualAlerts.toString();
+    }
+
+    private String readFileAsString(String s) throws IOException {
+        return new String(Files.readAllBytes(Paths.get(s)));
+    }
+
+    private String readNotificationsAsString() {
+        return null;
     }
 
     private JComponent makeCommands() {
         JPanel commands = new JPanel();
         commands.setLayout(new CardLayout());
 
-        String[] comboBoxItems = { "CHOOSE OPTION", "Today", "Next __ Days", "Enter Date" };
+        String[] comboBoxItems = {"CHOOSE OPTION", "Today", "Next __ Days", "Enter Date"};
         JComboBox<String> view = new JComboBox<>(comboBoxItems);
         view.setEditable(false);
 
@@ -65,7 +105,7 @@ public class AlertGUI extends JFrame {
         return commands;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         JFrame frame = new ui.AlertGUI("My Alert List");
         frame.setVisible(true);
     }
