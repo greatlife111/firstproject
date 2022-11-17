@@ -18,7 +18,7 @@ import java.util.Scanner;
 public class AlertApp {
     private static final String JSON_STORE = "./data/MyAlertList.json";
     private final Scanner input;
-    private Account myAccount;
+    Account myAccount;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
     Map<String, Runnable> exeMap;
