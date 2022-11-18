@@ -398,7 +398,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         panelForAddAlert = new JPanel();
         panelForAddAlert.add(new JLabel("Alert name:"));
         panelForAddAlert.add(forName);
-        panelForAddAlert.add(new JLabel("Due Date: (yyyy-mm-dd HH-MM)"));
+        panelForAddAlert.add(new JLabel("Due Date: (yyyy-mm-dd HH:MM)"));
         panelForAddAlert.add(forDate);
         panelForAddAlert.add(new JLabel("Repeat"));
         panelForAddAlert.add(forRepeat);
@@ -464,6 +464,48 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     }
 
     private void viewAlertAction() {
+        JTextField nameToView = new JTextField();
+        nameToView.setEditable(true);
+
+        JPanel panelForViewAlert = new JPanel();
+        panelForViewAlert.add(new JLabel("ALERT NAME TO VIEW:"));
+        panelForViewAlert.add(nameToView);
+
+        panelForViewAlert.setLayout(new BoxLayout(panelForViewAlert, BoxLayout.PAGE_AXIS));
+
+        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForViewAlert,
+                "", JOptionPane.OK_CANCEL_OPTION);
+
+        boolean alertDoesntExist = true;
+        if (selectedAlert == JOptionPane.YES_OPTION) {
+            String name = nameToView.getText().toUpperCase();
+
+            for (Alert a : myAccount.getAlerts().getList()) {
+                if (a.getDueName().equals(name)) {
+                    alertDoesntExist = false;
+                    displayAlert(a);
+                }
+            }
+            if (alertDoesntExist) {
+                displayAlertDoesNotExist();
+            }
+        }
+        updateAlertList();
+    }
+
+    private void displayAlert(Alert a) {
+        JLabel name = new JLabel("Name: " + a.getDueName());
+        JLabel date = new JLabel("Due Date: " + a.getFutureDate().toString());
+        JLabel repeat = new JLabel("Repeat: " + a.getRepeat());
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+
+        panel.add(name);
+        panel.add(date);
+        panel.add(repeat);
+
+        JOptionPane.showConfirmDialog(null, panel,"ALERT DETAILS", JOptionPane.OK_CANCEL_OPTION);
     }
 
     private void viewTodayAction() {

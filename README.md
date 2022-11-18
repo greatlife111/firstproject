@@ -50,4 +50,12 @@ on the date.
 - As a user, I want to be able to save all changes to my account including the id, name, and the alerts created
 - As a user, when I start the application, I want to be given the option to load my alert list.
 
+## PHASE THREE
+- As a user, I want to be able to add multiple alerts to the alert list.
+- As a user, I want to be able to delete multiple alerts in the alert list.
+- As a user, I want to be able to view details of a particular alert.
+- As a user, I want to be able to view alerts of today, next however many days, and on a certain date.
+- As a user, I want to be prompted to load account information before the GUI starts.
+- As a user, I want to be prompted to save account information before the GUI quits.
+
 
