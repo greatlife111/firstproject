@@ -1,18 +1,10 @@
 {
-    "name": "spring",
-    "alertlist": {"list": [
-        {
-            "date": "2022-11-18 10:00",
-            "due": "PHASE3DUE",
-            "created": "2022-11-16 16:14",
-            "repeat": 2
-        },
-        {
-            "date": "2022-11-20 10:00",
-            "due": "PHASE3EXTENSION",
-            "created": "2022-11-16 16:15",
-            "repeat": 3
-        }
-    ]},
-    "id": 5998
+    "name": "EnterYourName",
+    "alertlist": {"list": [{
+        "date": "2022-11-17 20:00",
+        "due": "alert1",
+        "created": "2022-11-17 18:59",
+        "repeat": 1
+    }]},
+    "id": 5628
 }

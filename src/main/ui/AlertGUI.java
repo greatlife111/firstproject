@@ -1,20 +1,25 @@
 package ui;
 
 import model.Account;
+import model.Alert;
 import model.AlertList;
 import persistance.JsonReader;
 import persistance.JsonWriter;
 
-
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
-public class AlertGUI extends JFrame {
+public class AlertGUI extends JFrame implements ListSelectionListener {
     private static final String JSON_STORE = "./data/MyAlertList.json";
     public static final int WIDTH = 900;
     public static final int HEIGHT = 900;
@@ -24,10 +29,16 @@ public class AlertGUI extends JFrame {
     private JsonReader jsonReader;
     private JsonWriter jsonWriter;
 
-    JTextArea allAlerts;
-    JTextArea allNotifications;
+    private DefaultListModel<Alert> alertListModel;
+    private DefaultListModel<String> notificationsListModel;
+
+    // display area
+    JList<Alert> alertJList;
+    JScrollPane allAlerts;
+    JScrollPane allNotifications;
     JTextArea accountInfo;
 
+    // Buttons
     JButton editName;
     JButton deleteAlert;
     JButton addAlert;
@@ -37,32 +48,39 @@ public class AlertGUI extends JFrame {
     JButton viewOntheDate;
     JButton confirmNotification;
 
+    // for user input
+    JTextField forName;
+    JTextField forDate;
+    JTextField forRepeat;
+    JPanel panelForAddAlert;
+
     public AlertGUI(String title) {
         super(title);
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        initializeFields();
         this.setContentPane(initializeGraphics());
         this.pack();
 
-        initializeFields();
-        startLoadPrompt();
-        saveLoadPrompt();
 
+        startPrompt();
+        savePrompt();
     }
 
     private void initializeFields() {
         myAccount = new Account(5628, "EnterYourName", new AlertList());
         jsonReader = new JsonReader(JSON_STORE);
         jsonWriter = new JsonWriter(JSON_STORE);
+        alertListModel = new DefaultListModel<>();
+        notificationsListModel = new DefaultListModel<>();
     }
 
-    private void saveLoadPrompt() {
+    private void savePrompt() {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent event) {
                 int save = JOptionPane.showConfirmDialog(null,
-                        "Would you like to save your account before exiting?", "Save",
-                        JOptionPane.YES_NO_OPTION);
+                        "Would you like to save your account before exiting?", "Save", JOptionPane.YES_NO_OPTION);
                 if (save == JOptionPane.YES_OPTION) {
                     try {
                         jsonWriter.open();
@@ -77,10 +95,9 @@ public class AlertGUI extends JFrame {
         });
     }
 
-    private void startLoadPrompt() {
+    private void startPrompt() {
         int load = JOptionPane.showConfirmDialog(null,
-                "Would you like to load your account?", "Load",
-                JOptionPane.YES_NO_OPTION);
+                "Would you like to load your account?", "Load", JOptionPane.YES_NO_OPTION);
         if (load == JOptionPane.YES_OPTION) {
             try {
                 myAccount = jsonReader.read();
@@ -92,8 +109,8 @@ public class AlertGUI extends JFrame {
     }
 
     private void loadAccount() {
+        updateAlerts();
     }
-
 
     public JPanel initializeGraphics() {
         JPanel mainPanel = new JPanel();
@@ -149,9 +166,6 @@ public class AlertGUI extends JFrame {
         confirmNotification.setActionCommand("confirm");
         confirmNotification.addActionListener(new ButtonListener());
 
-        allNotifications = new JTextArea();
-        allNotifications.setEditable(false);
-
         JPanel notificationPanel = new JPanel(false);
         JPanel commandsPanel = new JPanel();
 
@@ -161,11 +175,25 @@ public class AlertGUI extends JFrame {
         commandsPanel.add(confirmNotification);
 
         notificationPanel.add(commandsPanel);
-        notificationPanel.add(allNotifications);
+        notificationPanel.add(notificationsPane());
 
         return notificationPanel;
     }
 
+    private JScrollPane notificationsPane() {
+        allNotifications = new JScrollPane();
+
+        JList<String> notificationsWindow = new JList<>(notificationsListModel);
+        notificationsWindow.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        notificationsWindow.setSelectedIndex(0);
+        notificationsWindow.setVisibleRowCount(10);
+
+        JScrollPane notificationsScrollPane = new JScrollPane(notificationsWindow);
+        notificationsScrollPane.createVerticalScrollBar();
+        notificationsScrollPane.setHorizontalScrollBar(null);
+
+        return notificationsScrollPane;
+    }
 
     private JComponent makeAlertPanel() {
         deleteAlert = new JButton("DELETE AN ALERT");
@@ -180,8 +208,6 @@ public class AlertGUI extends JFrame {
         viewAlert.setActionCommand("view");
         viewAlert.addActionListener(new ButtonListener());
 
-        allAlerts = new JTextArea();
-        allAlerts.setEditable(false);
         JPanel alertPanel = new JPanel(false);
         JPanel commandsPanel = new JPanel();
 
@@ -193,34 +219,27 @@ public class AlertGUI extends JFrame {
         commandsPanel.add(viewAlert);
 
         alertPanel.add(commandsPanel);
-        alertPanel.add(allAlerts);
+        alertPanel.add(alertsPane());
 
         return alertPanel;
     }
 
-//    private String readAlertsAsString() throws Exception {
-//        String s = "./data/MyAlertList.json";
-//        String json = readFileAsString(s);
-//
-//        JSONObject j = new JSONObject(json);
-//        JSONObject alertlist = j.getJSONObject("alertlist");
-//
-//        JSONArray list = alertlist.getJSONArray("list");
-//        int length = list.length();
-//
-//        ArrayList<String> individualAlerts = new ArrayList<>();
-//        for (int i = 0; i < length; i++) {
-//            JSONObject o = list.getJSONObject(i);
-//            String lineWithBreak = o.getString("date") + "\r";
-//            individualAlerts.add(lineWithBreak);
-//        }
-//
-//        return individualAlerts.toString();
-//    }
-//
-//    private String readFileAsString(String s) throws IOException {
-//        return new String(Files.readAllBytes(Paths.get(s)));
-//    }
+    private JScrollPane alertsPane() {
+        alertJList = new JList<>(alertListModel);
+        allAlerts = new JScrollPane();
+
+        alertJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        alertJList.setSelectedIndex(0);
+        alertJList.addListSelectionListener(this);
+        alertJList.setVisibleRowCount(10);
+        alertJList.setCellRenderer(new AlertRenderer());
+
+        JScrollPane alertScrollPane = new JScrollPane(alertJList);
+        alertScrollPane.createVerticalScrollBar();
+        alertScrollPane.setHorizontalScrollBar(null);
+
+        return alertScrollPane;
+    }
 
 
     private JComponent makeCommandsPanel() {
@@ -251,15 +270,12 @@ public class AlertGUI extends JFrame {
         panel.add(choose, BorderLayout.PAGE_START);
         panel.add(commands, BorderLayout.CENTER);
 
-//        JButton[] comboBoxItems = {new JButton("CHOOSE OPTION TO VIEW"), viewToday, viewNextdays, viewOntheDate};
-//        JComboBox<JButton> view = new JComboBox<>(comboBoxItems);
-//
-//        JButton editAccount = new JButton();
-//
-//        commands.add(view, BorderLayout.CENTER);
-//        commands.add(editAccount, BorderLayout.PAGE_END);
-
         return panel;
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+
     }
 
 
@@ -290,6 +306,25 @@ public class AlertGUI extends JFrame {
         }
     }
 
+    // EFFECTS: updates alert list in the alert list tab
+    private void updateAlerts() {
+        alertListModel.clear();
+        List<Alert> alerts = myAccount.getAlerts().getList();
+        for (Alert a : alerts) {
+            alertListModel.addElement(a);
+        }
+
+        updateNotifications();
+    }
+
+    private void updateNotifications() {
+        notificationsListModel.clear();
+        for (Alert a : myAccount.getAlerts().getList()) {
+            String notiTostring = a.getNotifications().toString();
+            notificationsListModel.addElement(notiTostring);
+        }
+    }
+
     private void editAccountNameAction() {
     }
 
@@ -297,6 +332,65 @@ public class AlertGUI extends JFrame {
     }
 
     private void addAlertAction() {
+        forName = new JTextField();
+        forName.setEditable(true);
+        forDate = new JTextField();
+        forDate.setEditable(true);
+        forRepeat = new JTextField();
+        forRepeat.setEditable(true);
+
+        panelForAddAlert = new JPanel();
+        panelForAddAlert.add(new JLabel("Alert name:"));
+        panelForAddAlert.add(forName);
+        panelForAddAlert.add(new JLabel("Due Date: (yyyy-mm-dd HH-MM)"));
+        panelForAddAlert.add(forDate);
+        panelForAddAlert.add(new JLabel("Repeat"));
+        panelForAddAlert.add(forRepeat);
+
+        panelForAddAlert.setLayout(new BoxLayout(panelForAddAlert, BoxLayout.PAGE_AXIS));
+
+        addSelectedAlertToList();
+        updateAlertList();
+    }
+
+    private void updateAlertList() {
+        alertListModel.clear();
+        List<Alert> alerts = myAccount.getAlerts().getList();
+        for (Alert a : alerts) {
+            alertListModel.addElement(a);
+        }
+    }
+
+    private void addSelectedAlertToList() {
+        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForAddAlert,
+                "ENTER ALERT DETAILS", JOptionPane.OK_CANCEL_OPTION);
+
+        if (selectedAlert == JOptionPane.YES_OPTION) {
+            String name = forName.getText();
+            String date = forDate.getText();
+            String repeat = forRepeat.getText();
+
+            boolean alertDoesntExist = true;
+
+            for (Alert a : myAccount.getAlerts().getList()) {
+                if (a.getDueName().equals(name)) {
+                    alertDoesntExist = false;
+                    System.out.println("ALERT NAME ALREADY EXISTS");
+                }
+            }
+
+            if (alertDoesntExist) {
+                try {
+                    LocalDateTime dueTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                    Alert theOneAdded = new Alert(dueTime, name, Integer.parseInt(repeat));
+                    myAccount.getAlerts().addAlert(theOneAdded);
+
+                } catch (Exception ee) {
+                    System.out.println("INVALID INPUT");
+                }
+
+            }
+        }
     }
 
     private void viewAlertAction() {
@@ -313,4 +407,8 @@ public class AlertGUI extends JFrame {
 
     private void confirmNotificationAction() {
     }
+
 }
+
+
+
