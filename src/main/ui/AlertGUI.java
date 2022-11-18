@@ -34,6 +34,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
 
     // display area
     JList<Alert> alertJList;
+    JList<String> notificationsJList;
     JScrollPane allAlerts;
     JScrollPane allNotifications;
     JTextArea accountInfo;
@@ -110,6 +111,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
 
     private void loadAccount() {
         updateAlerts();
+        updateNotifications();
     }
 
     public JPanel initializeGraphics() {
@@ -181,14 +183,15 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     }
 
     private JScrollPane notificationsPane() {
+        notificationsJList = new JList<>(notificationsListModel);
         allNotifications = new JScrollPane();
 
-        JList<String> notificationsWindow = new JList<>(notificationsListModel);
-        notificationsWindow.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        notificationsWindow.setSelectedIndex(0);
-        notificationsWindow.setVisibleRowCount(10);
+        notificationsJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        notificationsJList.setSelectedIndex(0);
+        notificationsJList.addListSelectionListener(this);
+        notificationsJList.setVisibleRowCount(10);
 
-        JScrollPane notificationsScrollPane = new JScrollPane(notificationsWindow);
+        JScrollPane notificationsScrollPane = new JScrollPane(notificationsJList);
         notificationsScrollPane.createVerticalScrollBar();
         notificationsScrollPane.setHorizontalScrollBar(null);
 
@@ -313,15 +316,20 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         for (Alert a : alerts) {
             alertListModel.addElement(a);
         }
-
-        updateNotifications();
     }
 
     private void updateNotifications() {
         notificationsListModel.clear();
+        boolean thereIsNothing = true;
         for (Alert a : myAccount.getAlerts().getList()) {
-            String notiTostring = a.getNotifications().toString();
-            notificationsListModel.addElement(notiTostring);
+            if (a.shouldBeNotified(LocalDateTime.now())) {
+                thereIsNothing = false;
+                notificationsListModel.addElement("Name:" + a.getDueName());
+                notificationsListModel.addElement("Due:" + a.getFutureDate());
+            }
+        }
+        if (thereIsNothing) {
+            notificationsListModel.addElement("Nothing for now!");
         }
     }
 
@@ -375,7 +383,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
             for (Alert a : myAccount.getAlerts().getList()) {
                 if (a.getDueName().equals(name)) {
                     alertDoesntExist = false;
-                    System.out.println("ALERT NAME ALREADY EXISTS");
+                    displayAlertAlreadyExist();
                 }
             }
 
@@ -386,11 +394,20 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                     myAccount.getAlerts().addAlert(theOneAdded);
 
                 } catch (Exception ee) {
-                    System.out.println("INVALID INPUT");
+                    displayInvalidInput();
                 }
-
             }
         }
+    }
+
+    private void displayInvalidInput() {
+        JOptionPane.showMessageDialog(null, "INVALID INPUT",
+                "", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void displayAlertAlreadyExist() {
+        JOptionPane.showMessageDialog(null, "Alert Already Exist",
+                "", JOptionPane.ERROR_MESSAGE);
     }
 
     private void viewAlertAction() {
