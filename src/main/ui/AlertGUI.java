@@ -15,8 +15,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlertGUI extends JFrame implements ListSelectionListener {
@@ -45,7 +47,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     JButton deleteAlert;
     JButton addAlert;
     JButton viewAlert;
-    JButton viewToday;
+    JButton viewBeforeDate;
     JButton viewNextdays;
     JButton viewOntheDate;
     JButton confirmNotification;
@@ -249,9 +251,9 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
 
 
     private JComponent makeCommandsPanel() {
-        viewToday = new JButton("TODAY");
-        viewToday.setActionCommand("today");
-        viewToday.addActionListener(new ButtonListener());
+        viewBeforeDate = new JButton("VIEW BEFORE (DATE)");
+        viewBeforeDate.setActionCommand("beforedate");
+        viewBeforeDate.addActionListener(new ButtonListener());
 
         viewNextdays = new JButton("NEXT __ DAYS");
         viewNextdays.setActionCommand("next");
@@ -264,7 +266,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         JPanel commands = new JPanel();
         commands.setLayout(new FlowLayout());
 
-        commands.add(viewToday);
+        commands.add(viewBeforeDate);
         commands.add(viewNextdays);
         commands.add(viewOntheDate);
 
@@ -300,8 +302,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                 addAlertAction();
             } else if ("view".equals(actionCommand)) {
                 viewAlertAction();
-            } else if ("today".equals(actionCommand)) {
-                viewTodayAction();
+            } else if ("beforedate".equals(actionCommand)) {
+                viewBeforeDateAction();
             } else if ("next".equals(actionCommand)) {
                 viewNextDaysAction();
             } else if ("date".equals(actionCommand)) {
@@ -498,17 +500,58 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         JLabel date = new JLabel("Due Date: " + a.getFutureDate().toString());
         JLabel repeat = new JLabel("Repeat: " + a.getRepeat());
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        JPanel panelToDisplayAlert = new JPanel();
+        panelToDisplayAlert.setLayout(new BoxLayout(panelToDisplayAlert, BoxLayout.PAGE_AXIS));
 
-        panel.add(name);
-        panel.add(date);
-        panel.add(repeat);
+        panelToDisplayAlert.add(name);
+        panelToDisplayAlert.add(date);
+        panelToDisplayAlert.add(repeat);
 
-        JOptionPane.showConfirmDialog(null, panel,"ALERT DETAILS", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(null, panelToDisplayAlert,"ALERT DETAILS", JOptionPane.OK_CANCEL_OPTION);
     }
 
-    private void viewTodayAction() {
+    private void viewBeforeDateAction() {
+        List<Alert> displayAlerts = new ArrayList<>();
+        JTextField beforeDate = new JTextField();
+        beforeDate.setEditable(true);
+
+        JPanel panelForBeforeDate = new JPanel();
+        panelForBeforeDate.add(new JLabel("TYPE DATE (yyyy-MM-dd) TO VIEW ALL ALERTS BEFORE:"));
+        panelForBeforeDate.add(beforeDate);
+
+        panelForBeforeDate.setLayout(new BoxLayout(panelForBeforeDate, BoxLayout.PAGE_AXIS));
+
+        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForBeforeDate,
+                "", JOptionPane.OK_CANCEL_OPTION);
+
+        if (selectedAlert == JOptionPane.YES_OPTION) {
+            String dateText = beforeDate.getText() + " 00:00";
+            LocalDateTime dateTime = LocalDateTime.parse(dateText, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+            for (Alert a : myAccount.getAlerts().getList()) {
+                if (a.getFutureDate().isBefore(dateTime) || a.getFutureDate().isEqual(dateTime)) {
+                    displayAlerts.add(a);
+                }
+            }
+            displayMultipleAlerts(displayAlerts);
+        }
+
+    }
+
+    private void displayMultipleAlerts(List<Alert> displayAlerts) {
+        for (Alert a : displayAlerts) {
+            JLabel name = new JLabel("Name: " + a.getDueName());
+            JLabel date = new JLabel("Due Date: " + a.getFutureDate().toString());
+            JLabel repeat = new JLabel("Repeat: " + a.getRepeat());
+
+            JPanel panelToDisplayMultipleAlerts = new JPanel();
+            panelToDisplayMultipleAlerts.setLayout(new BoxLayout(panelToDisplayMultipleAlerts, BoxLayout.PAGE_AXIS));
+
+            panelToDisplayMultipleAlerts.add(name);
+            panelToDisplayMultipleAlerts.add(date);
+            panelToDisplayMultipleAlerts.add(repeat);
+
+        }
     }
 
     private void viewNextDaysAction() {

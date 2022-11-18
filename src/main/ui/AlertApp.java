@@ -41,12 +41,13 @@ public class AlertApp {
         exeMap.put("D", this::viewNextDays);
         exeMap.put("E", this::viewNotifications);
         exeMap.put("F", this::viewOnTheDay);
-        exeMap.put("G", this::confirmNotification);
-        exeMap.put("H", this::accountInformation);
-        exeMap.put("I", this::alertDetails);
-        exeMap.put("J", this::editAlertDetails);
-        exeMap.put("K", this::saveAccount);
-        exeMap.put("L", this::loadAccount);
+        exeMap.put("G", this::viewBeforeDate);
+        exeMap.put("H", this::confirmNotification);
+        exeMap.put("I", this::accountInformation);
+        exeMap.put("J", this::alertDetails);
+        exeMap.put("K", this::editAlertDetails);
+        exeMap.put("L", this::saveAccount);
+        exeMap.put("M", this::loadAccount);
     }
 
 
@@ -271,6 +272,25 @@ public class AlertApp {
         }
     }
 
+    // EFFECTS: displays all alerts on input date
+    private void viewBeforeDate() {
+        System.out.println("ENTER THE DATE IN THE FORMAT yyyy-MM-dd");
+        try {
+            String date = input.nextLine();
+            date += " 00:00";
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime theDay = LocalDateTime.parse(date, dateFormat);
+
+            for (Alert a : myAccount.getAlerts().viewAlertBeforeDate(theDay)) {
+                System.out.println("Alert name:" + a.getDueName());
+                System.out.println("Due time:" + a.getFutureDate());
+                System.out.println("Repeat:" + a.getRepeat());
+            }
+        } catch (DateTimeException ee) {
+            System.out.println("INVALID INPUT DATE");
+        }
+    }
+
     // EFFECTS: displays all notifications
     private void viewNotifications() {
         boolean thereIsNothing = true;
@@ -369,12 +389,13 @@ public class AlertApp {
         System.out.println("D: VIEW ALERTS OF NEXT _ DAYS");
         System.out.println("E: VIEW NOTIFICATIONS");
         System.out.println("F: VIEW ON THE DAY");
-        System.out.println("G: CONFIRM NOTIFICATION");
-        System.out.println("H: ACCOUNT INFORMATION");
-        System.out.println("I: VIEW ALERT DETAILS");
-        System.out.println("J: EDIT ALERT DETAILS");
-        System.out.println("K: SAVE YOUR ACCOUNT");
-        System.out.println("L: LOAD YOUR ACCOUNT");
+        System.out.println("G: VIEW BEFORE DATE");
+        System.out.println("H: CONFIRM NOTIFICATION");
+        System.out.println("I: ACCOUNT INFORMATION");
+        System.out.println("J: VIEW ALERT DETAILS");
+        System.out.println("K: EDIT ALERT DETAILS");
+        System.out.println("L: SAVE YOUR ACCOUNT");
+        System.out.println("M: LOAD YOUR ACCOUNT");
         System.out.println("Q: QUIT");
     }
 }
