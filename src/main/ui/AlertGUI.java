@@ -32,12 +32,13 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     private DefaultListModel<Alert> alertListModel;
     private DefaultListModel<String> notificationsListModel;
 
+
     // display area
     JList<Alert> alertJList;
     JList<String> notificationsJList;
     JScrollPane allAlerts;
     JScrollPane allNotifications;
-    JTextArea accountInfo;
+    JTextField accountName;
 
     // Buttons
     JButton editName;
@@ -69,7 +70,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     }
 
     private void initializeFields() {
-        myAccount = new Account(5628, "EnterYourName", new AlertList());
+        myAccount = new Account(5628, "No Name Yet", new AlertList());
         jsonReader = new JsonReader(JSON_STORE);
         jsonWriter = new JsonWriter(JSON_STORE);
         alertListModel = new DefaultListModel<>();
@@ -81,7 +82,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
             @Override
             public void windowClosing(WindowEvent event) {
                 int save = JOptionPane.showConfirmDialog(null,
-                        "Would you like to save your account before exiting?", "Save", JOptionPane.YES_NO_OPTION);
+                        "Would you like to save your account before exiting?", "Save",
+                        JOptionPane.YES_NO_OPTION);
                 if (save == JOptionPane.YES_OPTION) {
                     try {
                         jsonWriter.open();
@@ -146,8 +148,9 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         editName.setActionCommand("edit");
         editName.addActionListener(new ButtonListener());
 
-        accountInfo = new JTextArea();
-        accountInfo.setEditable(false);
+        accountName = new JTextField();
+        accountName.setEditable(false);
+        accountName.setText("NAME:" + myAccount.getName());
 
         JPanel accountPanel = new JPanel(false);
         JPanel commandsPanel = new JPanel();
@@ -157,7 +160,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         commandsPanel.setLayout(new FlowLayout());
         commandsPanel.add(editName);
 
-        accountPanel.add(accountInfo);
+        accountPanel.add(accountName);
         accountPanel.add(commandsPanel);
 
         return accountPanel;
@@ -309,6 +312,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         }
     }
 
+    // MODIFIES: this
     // EFFECTS: updates alert list in the alert list tab
     private void updateAlerts() {
         alertListModel.clear();
@@ -334,9 +338,53 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     }
 
     private void editAccountNameAction() {
+        JTextField newName = new JTextField();
+        newName.setEditable(true);
+
+        JPanel panelForNewName = new JPanel();
+        panelForNewName.add(new JLabel("NEW ACCOUNT NAME:"));
+        panelForNewName.add(newName);
+
+        panelForNewName.setLayout(new BoxLayout(panelForNewName, BoxLayout.PAGE_AXIS));
+        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForNewName,
+                "EDIT", JOptionPane.OK_CANCEL_OPTION);
+
+        if (selectedAlert == JOptionPane.YES_OPTION) {
+            String name = newName.getText();
+            myAccount.changeName(name);
+            this.accountName.setText(name);
+        }
     }
 
+
     private void deleteAlertAction() {
+        JTextField nameForDelete = new JTextField();
+        nameForDelete.setEditable(true);
+
+        JPanel panelForDeleteAlert = new JPanel();
+        panelForDeleteAlert.add(new JLabel("ALERT NAME TO DELETE:"));
+        panelForDeleteAlert.add(nameForDelete);
+
+        panelForDeleteAlert.setLayout(new BoxLayout(panelForDeleteAlert, BoxLayout.PAGE_AXIS));
+
+        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForDeleteAlert,
+                "", JOptionPane.OK_CANCEL_OPTION);
+
+        boolean alertDoesntExist = true;
+        if (selectedAlert == JOptionPane.YES_OPTION) {
+            String name = nameForDelete.getText().toUpperCase();
+
+            for (Alert a : myAccount.getAlerts().getList()) {
+                if (a.getDueName().equals(name)) {
+                    alertDoesntExist = false;
+                    myAccount.getAlerts().removeAlert(name);
+                }
+            }
+            if (alertDoesntExist) {
+                displayAlertDoesNotExist();
+            }
+        }
+        updateAlertList();
     }
 
     private void addAlertAction() {
@@ -374,7 +422,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                 "ENTER ALERT DETAILS", JOptionPane.OK_CANCEL_OPTION);
 
         if (selectedAlert == JOptionPane.YES_OPTION) {
-            String name = forName.getText();
+            String name = forName.getText().toUpperCase();
             String date = forDate.getText();
             String repeat = forRepeat.getText();
 
@@ -407,6 +455,11 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
 
     private void displayAlertAlreadyExist() {
         JOptionPane.showMessageDialog(null, "Alert Already Exist",
+                "", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void displayAlertDoesNotExist() {
+        JOptionPane.showMessageDialog(null, "Alert Does Not Exist",
                 "", JOptionPane.ERROR_MESSAGE);
     }
 
