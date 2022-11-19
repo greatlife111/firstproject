@@ -20,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+// Represents the alert GUI
 public class AlertGUI extends JFrame implements ListSelectionListener {
     private static final String JSON_STORE = "./data/MyAlertList.json";
     public static final int WIDTH = 900;
@@ -58,6 +59,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     JTextField forRepeat;
     JPanel panelForAddAlert;
 
+    // EFFECTS: sets up the app window
     public AlertGUI(String title) {
         super(title);
 
@@ -69,6 +71,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         savePrompt();
     }
 
+    // MODIFIES: this
+    // EFFECTS: initializes the data fields
     private void initializeFields() {
         myAccount = new Account(5628, "No Name Yet", new AlertList());
         image = new ImageIcon("./data/yikes-emoji.png");
@@ -79,6 +83,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     }
 
 
+    // MODIFIES: this
+    // EFFECTS: prompts the user to save the account
     private void savePrompt() {
         addWindowListener(new WindowAdapter() {
             @Override
@@ -102,6 +108,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         });
     }
 
+    // EFFECTS: prompts the user to load saved data before the app starts
     private void startPrompt() {
         int load = JOptionPane.showConfirmDialog(null,
                 "Would you like to load your account?", "Load", JOptionPane.YES_NO_OPTION);
@@ -117,11 +124,14 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         }
     }
 
+    // EFFECTS: loads account with previously saved information
     private void loadAccount() {
         updateAlerts();
         updateNotifications();
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up the main content panel of the app
     public JPanel initializeGraphics() {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
@@ -131,6 +141,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         return mainPanel;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up tabs and their contents in the main content panel
     public JTabbedPane setTabs() {
         JTabbedPane tabs = new JTabbedPane();
 
@@ -149,6 +161,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         return tabs;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up the panel for account
     private JComponent makeAccountPanel() {
         editName = new JButton("EDIT NAME");
         editName.setActionCommand("edit");
@@ -172,6 +186,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         return accountPanel;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up the notifications panel
     private JComponent makeNotificationPanel() {
         confirmNotification = new JButton("CONFIRM NOTIFICATION");
         confirmNotification.setActionCommand("confirm");
@@ -191,6 +207,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         return notificationPanel;
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays notifications
     private JScrollPane notificationsPane() {
         notificationsJList = new JList<>(notificationsListModel);
         allNotifications = new JScrollPane();
@@ -207,6 +225,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         return notificationsScrollPane;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up the alert list panel
     private JComponent makeAlertPanel() {
         deleteAlert = new JButton("DELETE AN ALERT");
         deleteAlert.setActionCommand("delete");
@@ -236,6 +256,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         return alertPanel;
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays list of added alerts
     private JScrollPane alertsPane() {
         alertJList = new JList<>(alertListModel);
         allAlerts = new JScrollPane();
@@ -254,6 +276,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     }
 
 
+    // MODIFIES: this
+    // EFFECTS: sets up a panel for viewing alerts before a date, in the next __ days, and on a specific date
     private JComponent makeCommandsPanel() {
         viewBeforeDate = new JButton("VIEW BEFORE (DATE)");
         viewBeforeDate.setActionCommand("beforedate");
@@ -285,12 +309,14 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         return panel;
     }
 
+    // No implementations for this method as not neccessary.
     @Override
     public void valueChanged(ListSelectionEvent e) {
 
     }
 
 
+    // CITATION: https://docs.oracle.com/javase/tutorial/uiswing/events/actionlistener.html
     // creates Action Listener for button presses
     class ButtonListener implements ActionListener {
 
@@ -329,6 +355,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates notifications in the notifications tab
     private void updateNotifications() {
         notificationsListModel.clear();
         boolean thereIsNothing = true;
@@ -344,6 +372,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: changes the account name to user input
     private void editAccountNameAction() {
         JTextField newName = new JTextField();
         newName.setEditable(true);
@@ -364,6 +394,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     }
 
 
+    // MODIFIES: this
+    // EFFECTS: deletes the alert if it exists in the alert list
     private void deleteAlertAction() {
         JTextField nameForDelete = new JTextField();
         nameForDelete.setEditable(true);
@@ -394,6 +426,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds an alert if it does not exist in the alert list and updates the list in the panel
     private void addAlertAction() {
         forName = new JTextField();
         forName.setEditable(true);
@@ -427,6 +461,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     }
 
 
+    // MODIFIES: this
+    // EFFECTS: helper method for addAlertAction(); adds the alert to the alert list if not already exists
     private void addSelectedAlertToList() {
         int selectedAlert = JOptionPane.showConfirmDialog(null, panelForAddAlert,
                 "ENTER ALERT DETAILS", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, image);
@@ -458,21 +494,25 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         }
     }
 
+    // EFFECTS: displays that the user input is invalid
     private void displayInvalidInput() {
         JOptionPane.showMessageDialog(null, "INVALID INPUT",
                 "", JOptionPane.ERROR_MESSAGE);
     }
 
+    // EFFECTS: displays that the alert already exists
     private void displayAlertAlreadyExist() {
         JOptionPane.showMessageDialog(null, "Alert Already Exist",
                 "", JOptionPane.ERROR_MESSAGE);
     }
 
+    // EFFECTS: displays the alert does not exist
     private void displayAlertDoesNotExist() {
         JOptionPane.showMessageDialog(null, "Alert Does Not Exist",
                 "", JOptionPane.ERROR_MESSAGE);
     }
 
+    // EFFECTS: displays the alert details of a selected alert
     private void viewAlertAction() {
         JTextField nameToView = new JTextField();
         nameToView.setEditable(true);
@@ -503,6 +543,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         updateAlertList();
     }
 
+    // EFFECTS: helped method for viewAlertAction(); displays alert details in a dialog
     private void displayAlert(Alert a) {
         JLabel name = new JLabel("Name: " + a.getDueName());
         JLabel date = new JLabel("Due Date: " + a.getFutureDate().toString());
@@ -518,6 +559,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         JOptionPane.showConfirmDialog(null, panelToDisplayAlert, "ALERT DETAILS", JOptionPane.OK_CANCEL_OPTION);
     }
 
+    // EFFECTS: displays all alerts before a chosen date
     private void viewBeforeDateAction() {
         List<Alert> displayAlerts = new ArrayList<>();
         JTextField beforeDate = new JTextField();
@@ -546,6 +588,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
 
     }
 
+    // EFFECTS: helper method for viewBeforeDateAction(); displays all the alerts before chosen date in a dialog
     private void displayMultipleAlerts(List<Alert> displayAlerts) {
         for (Alert a : displayAlerts) {
             JLabel name = new JLabel("Name: " + a.getDueName());
@@ -562,12 +605,16 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         }
     }
 
+    // EFFECTS: displays all alerts in the next ___ days
     private void viewNextDaysAction() {
     }
 
+    // EFFECTS: displays all alerts on a chosen date
     private void viewOnTheDayAction() {
     }
 
+    // MODIFIES: this
+    // EFFECTS: confirms a notification in the notification list\
     private void confirmNotificationAction() {
     }
 
