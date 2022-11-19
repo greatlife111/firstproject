@@ -1,18 +1,10 @@
 {
     "name": "spring",
-    "alertlist": {"list": [
-        {
-            "date": "2022-11-19 10:00",
-            "due": "MINE",
-            "created": "2022-11-18 00:12",
-            "repeat": 100
-        },
-        {
-            "date": "2022-11-21 10:00",
-            "due": "ALSOMINE",
-            "created": "2022-11-18 01:07",
-            "repeat": 2
-        }
-    ]},
+    "alertlist": {"list": [{
+        "date": "2022-12-01 10:00",
+        "due": "HUH",
+        "created": "2022-11-18 21:38",
+        "repeat": 2
+    }]},
     "id": 5628
 }

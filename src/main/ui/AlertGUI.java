@@ -15,7 +15,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
 
     private JsonReader jsonReader;
     private JsonWriter jsonWriter;
+    private ImageIcon image;
 
     private DefaultListModel<Alert> alertListModel;
     private DefaultListModel<String> notificationsListModel;
@@ -65,19 +65,19 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         initializeFields();
         this.setContentPane(initializeGraphics());
         this.pack();
-
-
         startPrompt();
         savePrompt();
     }
 
     private void initializeFields() {
         myAccount = new Account(5628, "No Name Yet", new AlertList());
+        image = new ImageIcon("./data/yikes-emoji.png");
         jsonReader = new JsonReader(JSON_STORE);
         jsonWriter = new JsonWriter(JSON_STORE);
         alertListModel = new DefaultListModel<>();
         notificationsListModel = new DefaultListModel<>();
     }
+
 
     private void savePrompt() {
         addWindowListener(new WindowAdapter() {
@@ -92,7 +92,9 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                         jsonWriter.write(myAccount);
                         jsonWriter.close();
                     } catch (FileNotFoundException e) {
-                        System.out.println("Unable to write to file: " + JSON_STORE);
+                        JOptionPane.showMessageDialog(null,
+                                "Unable to write to" + JSON_STORE, "FILE NOT FOUND",
+                                JOptionPane.YES_OPTION);
                     }
                     dispose();
                 }
@@ -108,7 +110,9 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                 myAccount = jsonReader.read();
                 loadAccount();
             } catch (Exception e) {
-                System.out.println("Unable to read from file " + JSON_STORE);
+                JOptionPane.showMessageDialog(null,
+                        "Unable to read file: " + JSON_STORE, "FILE NOT FOUND",
+                        JOptionPane.YES_OPTION);
             }
         }
     }
@@ -314,6 +318,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         }
     }
 
+
     // MODIFIES: this
     // EFFECTS: updates alert list in the alert list tab
     private void updateAlerts() {
@@ -380,13 +385,13 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                 if (a.getDueName().equals(name)) {
                     alertDoesntExist = false;
                     myAccount.getAlerts().removeAlert(name);
+                    updateAlertList();
                 }
             }
             if (alertDoesntExist) {
                 displayAlertDoesNotExist();
             }
         }
-        updateAlertList();
     }
 
     private void addAlertAction() {
@@ -411,6 +416,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         updateAlertList();
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates alert list in the alert list tab
     private void updateAlertList() {
         alertListModel.clear();
         List<Alert> alerts = myAccount.getAlerts().getList();
@@ -419,9 +426,10 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         }
     }
 
+
     private void addSelectedAlertToList() {
         int selectedAlert = JOptionPane.showConfirmDialog(null, panelForAddAlert,
-                "ENTER ALERT DETAILS", JOptionPane.OK_CANCEL_OPTION);
+                "ENTER ALERT DETAILS", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, image);
 
         if (selectedAlert == JOptionPane.YES_OPTION) {
             String name = forName.getText().toUpperCase();
@@ -507,7 +515,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         panelToDisplayAlert.add(date);
         panelToDisplayAlert.add(repeat);
 
-        JOptionPane.showConfirmDialog(null, panelToDisplayAlert,"ALERT DETAILS", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(null, panelToDisplayAlert, "ALERT DETAILS", JOptionPane.OK_CANCEL_OPTION);
     }
 
     private void viewBeforeDateAction() {
