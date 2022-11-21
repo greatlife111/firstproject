@@ -36,7 +36,7 @@ public class Alert implements Writable {
         if (repeat < 0) {
             throw new NumberFormatException();
         }
-        if (!(date.isEqual(LocalDateTime.now()) || date.isBefore(LocalDateTime.now()))) {
+        if (!(date.isBefore(LocalDateTime.now()))) {
             this.notifications = calculateNotifications(createdDate, date, repeat);
         }
         this.date = date;
@@ -98,8 +98,10 @@ public class Alert implements Writable {
     // EFFECTS: changes the date of the alert
     public void changeDate(LocalDateTime d)  {
         date = d;
-        if (!(d.isEqual(LocalDateTime.now()) || d.isBefore(LocalDateTime.now()))) {
+        if (!(d.isBefore(LocalDateTime.now()))) {
             this.notifications = calculateNotifications(createdDate, d, repeat);
+        } else {
+            this.notifications = null;
         }
     }
 
