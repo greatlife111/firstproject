@@ -4,7 +4,7 @@ package model;
 import org.json.JSONObject;
 import persistance.Writable;
 
-import java.time.DateTimeException;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -18,7 +18,7 @@ public class Alert implements Writable {
     private LocalDateTime date;        // due date of the alert
     private String due;                // name of alert
     private int repeat;                // how many times the alert is repeated
-    private LocalDateTime createdDate;   // when the alert is made
+    private final LocalDateTime createdDate;   // when the alert is made
 
 
     //REQUIRES: none
@@ -36,18 +36,20 @@ public class Alert implements Writable {
         if (repeat < 0) {
             throw new NumberFormatException();
         }
+        if (!(date.isEqual(LocalDateTime.now()) || date.isBefore(LocalDateTime.now()))) {
+            this.notifications = calculateNotifications(createdDate, date, repeat);
+        }
         this.date = date;
         this.due = due;
         this.createdDate = createdDate;
         this.repeat = repeat;
-        this.notifications = calculateNotifications(createdDate, date, repeat);
     }
 
     // REQUIRES: none
     // MODIFIES: this
     // EFFECTS: return specific dates(type LocalDateTime) when the alert will be notified as an arraylist
-    public List<LocalDateTime> calculateNotifications(LocalDateTime createdDate,
-                                                      LocalDateTime finalAlertTime, int repeat) {
+    public List<LocalDateTime> calculateNotifications(LocalDateTime createdDate, LocalDateTime finalAlertTime,
+                                                      int repeat) {
         List<LocalDateTime> notificationList;
         notificationList = new ArrayList<>();
         if (repeat == 0) {
@@ -94,11 +96,9 @@ public class Alert implements Writable {
     //           00 and 59
     // MODIFIES: this
     // EFFECTS: changes the date of the alert
-    public void changeDate(LocalDateTime d) throws DateTimeException {
-        if (d.isEqual(LocalDateTime.now()) || d.isBefore(LocalDateTime.now())) {
-            throw new DateTimeException("invalid");
-        } else {
-            date = d;
+    public void changeDate(LocalDateTime d)  {
+        date = d;
+        if (!(d.isEqual(LocalDateTime.now()) || d.isBefore(LocalDateTime.now()))) {
             this.notifications = calculateNotifications(createdDate, d, repeat);
         }
     }

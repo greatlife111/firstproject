@@ -487,7 +487,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                     Alert theOneAdded = new Alert(dueTime, name, Integer.parseInt(repeat));
                     myAccount.getAlerts().addAlert(theOneAdded);
 
-                } catch (Exception ee) {
+                } catch (NumberFormatException ee) {
                     displayInvalidInput();
                 }
             }

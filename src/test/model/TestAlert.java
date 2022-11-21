@@ -3,7 +3,6 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -46,30 +45,14 @@ class TestAlert {
         } catch (NumberFormatException ee) {
             //
         }
+
     }
+
 
     @Test
     void testChangeDate() {
-        try {
-            alertModel.changeDate(dateModel2);
-        } catch (DateTimeException ee) {
-            fail("valid input");
-        }
+        alertModel.changeDate(dateModel2);
         assertEquals(dateModel2, alertModel.getFutureDate());
-
-        try {
-            alertModel.changeDate(createdDate);
-            fail("invalid input");
-        } catch (DateTimeException ee) {
-            // pass
-        }
-
-        try {
-            alertModel.changeDate(LocalDateTime.now());
-            fail("invalid input");
-        } catch (DateTimeException ee) {
-            // pass
-        }
     }
 
     @Test
