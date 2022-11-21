@@ -49,7 +49,7 @@ class TestAlert {
         try {
             Alert alert = new Alert(LocalDateTime.of(2022, 1, 1, 1, 1),
                     "phase 1", 1);
-            assertEquals(null, alert.getNotifications());
+            assertNull(alert.getNotifications());
         } catch (NumberFormatException ee) {
             //
         }
@@ -64,7 +64,7 @@ class TestAlert {
 
         alertModel.changeDate(LocalDateTime.of(2022, 1, 1, 1, 1));
         assertEquals(LocalDateTime.of(2022, 1, 1, 1, 1), alertModel.getFutureDate());
-        assertEquals(null, alertModel.getNotifications());
+        assertNull(alertModel.getNotifications());
     }
 
     @Test
