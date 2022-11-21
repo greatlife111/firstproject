@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -218,6 +219,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         notificationsJList.addListSelectionListener(this);
         notificationsJList.setVisibleRowCount(10);
 
+
         JScrollPane notificationsScrollPane = new JScrollPane(notificationsJList);
         notificationsScrollPane.createVerticalScrollBar();
         notificationsScrollPane.setHorizontalScrollBar(null);
@@ -361,10 +363,12 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         notificationsListModel.clear();
         boolean thereIsNothing = true;
         for (Alert a : myAccount.getAlerts().getList()) {
-            if (a.shouldBeNotified(LocalDateTime.now())) {
-                thereIsNothing = false;
-                notificationsListModel.addElement("Name:" + a.getDueName());
-                notificationsListModel.addElement("Due:" + a.getFutureDate());
+            if (!(null == a.getNotifications()) && !a.getNotifications().isEmpty()) {
+                if (a.shouldBeNotified(LocalDateTime.now())) {
+                    thereIsNothing = false;
+                    notificationsListModel.addElement("Name:" + a.getDueName());
+                    notificationsListModel.addElement("Due:" + a.getFutureDate());
+                }
             }
         }
         if (thereIsNothing) {
@@ -417,7 +421,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                 if (a.getDueName().equals(name)) {
                     alertDoesntExist = false;
                     myAccount.getAlerts().removeAlert(name);
-                    updateAlertList();
+                    updateAlerts();
+                    updateNotifications();
                 }
             }
             if (alertDoesntExist) {
@@ -447,17 +452,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         panelForAddAlert.setLayout(new BoxLayout(panelForAddAlert, BoxLayout.PAGE_AXIS));
 
         addSelectedAlertToList();
-        updateAlertList();
-    }
-
-    // MODIFIES: this
-    // EFFECTS: updates alert list in the alert list tab
-    private void updateAlertList() {
-        alertListModel.clear();
-        List<Alert> alerts = myAccount.getAlerts().getList();
-        for (Alert a : alerts) {
-            alertListModel.addElement(a);
-        }
+        updateAlerts();
+        updateNotifications();
     }
 
 
@@ -540,7 +536,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                 displayAlertDoesNotExist();
             }
         }
-        updateAlertList();
+        updateAlerts();
     }
 
     // EFFECTS: helped method for viewAlertAction(); displays alert details in a dialog
@@ -574,48 +570,97 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         int selectedAlert = JOptionPane.showConfirmDialog(null, panelForBeforeDate,
                 "", JOptionPane.OK_CANCEL_OPTION);
 
-        if (selectedAlert == JOptionPane.YES_OPTION) {
-            String dateText = beforeDate.getText() + " 00:00";
-            LocalDateTime dateTime = LocalDateTime.parse(dateText, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        try {
+            if (selectedAlert == JOptionPane.YES_OPTION) {
+                String dateText = beforeDate.getText() + " 00:00";
+                LocalDateTime dateTime = LocalDateTime.parse(dateText, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-            for (Alert a : myAccount.getAlerts().getList()) {
-                if (a.getFutureDate().isBefore(dateTime) || a.getFutureDate().isEqual(dateTime)) {
-                    displayAlerts.add(a);
+                for (Alert a : myAccount.getAlerts().getList()) {
+                    if (a.getFutureDate().isBefore(dateTime) || a.getFutureDate().isEqual(dateTime)) {
+                        displayAlerts.add(a);
+                    }
                 }
+                displayMultipleAlerts(displayAlerts);
             }
-            displayMultipleAlerts(displayAlerts);
+        } catch (DateTimeException ee) {
+            displayInvalidInput();
         }
-
     }
 
     // EFFECTS: helper method for viewBeforeDateAction(); displays all the alerts before chosen date in a dialog
     private void displayMultipleAlerts(List<Alert> displayAlerts) {
+        JPanel panelToDisplayMultipleAlerts = new JPanel();
+        panelToDisplayMultipleAlerts.setLayout(new BoxLayout(panelToDisplayMultipleAlerts, BoxLayout.PAGE_AXIS));
         for (Alert a : displayAlerts) {
             JLabel name = new JLabel("Name: " + a.getDueName());
             JLabel date = new JLabel("Due Date: " + a.getFutureDate().toString());
             JLabel repeat = new JLabel("Repeat: " + a.getRepeat());
 
-            JPanel panelToDisplayMultipleAlerts = new JPanel();
-            panelToDisplayMultipleAlerts.setLayout(new BoxLayout(panelToDisplayMultipleAlerts, BoxLayout.PAGE_AXIS));
 
             panelToDisplayMultipleAlerts.add(name);
             panelToDisplayMultipleAlerts.add(date);
             panelToDisplayMultipleAlerts.add(repeat);
-
         }
+        JOptionPane.showConfirmDialog(null, panelToDisplayMultipleAlerts, "ALERT DETAILS",
+                JOptionPane.OK_CANCEL_OPTION);
     }
 
     // EFFECTS: displays all alerts in the next ___ days
     private void viewNextDaysAction() {
+        List<Alert> displayAlerts = new ArrayList<>();
+        JTextField nextDays = new JTextField();
+        nextDays.setEditable(true);
+
+        JPanel panelForNextDays = new JPanel();
+        panelForNextDays.add(new JLabel("TYPE HOW MANY DAYS:"));
+        panelForNextDays.add(nextDays);
+
+        panelForNextDays.setLayout(new BoxLayout(panelForNextDays, BoxLayout.PAGE_AXIS));
+
+        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForNextDays,
+                "", JOptionPane.OK_CANCEL_OPTION);
+
+        if (selectedAlert == JOptionPane.YES_OPTION) {
+            try {
+                displayAlerts.addAll(myAccount.getAlerts().viewAlertNextDays(Integer.parseInt(nextDays.getText())));
+                displayMultipleAlerts(displayAlerts);
+            } catch (NumberFormatException ee) {
+                displayInvalidInput();
+            }
+        }
     }
+
 
     // EFFECTS: displays all alerts on a chosen date
     private void viewOnTheDayAction() {
+        JTextField onTheDay = new JTextField();
+        onTheDay.setEditable(true);
+
+        JPanel panelForOnTheDay = new JPanel();
+        panelForOnTheDay.add(new JLabel("TYPE THE DATE:(yyyy-MM-dd)"));
+        panelForOnTheDay.add(onTheDay);
+
+        panelForOnTheDay.setLayout(new BoxLayout(panelForOnTheDay, BoxLayout.PAGE_AXIS));
+
+        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForOnTheDay,
+                "", JOptionPane.OK_CANCEL_OPTION);
+
+        String newDate = onTheDay.getText() + " 00:00";
+        LocalDateTime d = LocalDateTime.parse(newDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        if (selectedAlert == JOptionPane.YES_OPTION) {
+            try {
+                List<Alert> displayAlerts = new ArrayList<>(myAccount.getAlerts().viewAlertsOnTheDay(d));
+                displayMultipleAlerts(displayAlerts);
+            } catch (NumberFormatException ee) {
+                displayInvalidInput();
+            }
+        }
     }
 
     // MODIFIES: this
-    // EFFECTS: confirms a notification in the notification list\
+    // EFFECTS: confirms a notification in the notification list
     private void confirmNotificationAction() {
+
     }
 
 }

@@ -89,7 +89,7 @@ public class AlertList implements Writable {
             LocalDateTime endDate = now.plusDays(d + 1);
             endDate = LocalDateTime.of(endDate.getYear(), endDate.getMonthValue(), endDate.getDayOfMonth(), 0, 0);
             for (Alert a : list) {
-                if (a.getFutureDate().isBefore(endDate)) {
+                if (a.getFutureDate().isBefore(endDate) && a.getFutureDate().isAfter(LocalDateTime.now())) {
                     alertListOfNextDays.add(a);
                 }
             }
