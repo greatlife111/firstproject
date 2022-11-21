@@ -103,6 +103,18 @@ public class TestAlertList {
             // pass
         }
 
+        try {
+            LocalDateTime begin = LocalDateTime.of(2023, 10, 19, 1, 1);
+            LocalDateTime endDate = begin.plusDays(1);
+            endDate = LocalDateTime.of(endDate.getYear(), endDate.getMonthValue(), endDate.getDayOfMonth(),
+                    0, 0);
+            list1.addAlert(new Alert(endDate, "", 1));
+            list1.viewAlertNextDays(0, begin);
+            fail("invalid input");
+        } catch (NumberFormatException ee) {
+            // pass
+        }
+
     }
 
     @Test
