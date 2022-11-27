@@ -57,5 +57,6 @@ on the date.
 - As a user, I want to be able to view alerts of next however many days, a certain date.
 - As a user, I want to be prompted to load account information before the GUI starts.
 - As a user, I want to be prompted to save account information before the GUI quits.
+- As a user, I want to be able to view all the notifications and confirm them.
 
 

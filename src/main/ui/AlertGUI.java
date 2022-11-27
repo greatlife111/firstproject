@@ -7,6 +7,8 @@ import persistance.JsonReader;
 import persistance.JsonWriter;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
@@ -66,9 +68,9 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         initializeFields();
-        this.setContentPane(initializeGraphics());
         this.pack();
         startPrompt();
+        this.setContentPane(initializeGraphics());
         savePrompt();
     }
 
@@ -115,6 +117,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                 "Would you like to load your account?", "Load", JOptionPane.YES_NO_OPTION);
         if (load == JOptionPane.YES_OPTION) {
             try {
+
                 myAccount = jsonReader.read();
                 loadAccount();
             } catch (Exception e) {
@@ -158,6 +161,15 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
 
         JComponent account = makeAccountPanel();
         tabs.addTab("Account", account);
+
+        tabs.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                if (tabs.getSelectedIndex() == 1) {
+                    updateNotifications();
+                }
+                System.out.println("Tab: " + tabs.getSelectedIndex());
+            }
+        });
 
         return tabs;
     }
@@ -363,14 +375,14 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         notificationsListModel.clear();
         boolean thereIsNothing = true;
         for (Alert a : myAccount.getAlerts().getList()) {
-            if (!(null == a.getNotifications()) && !a.getNotifications().isEmpty()) {
-                if (a.shouldBeNotified(LocalDateTime.now())) {
+            if (!(null == a.getNotifications()) && a.getNotifications().size() > 0) {
+                if (a.getNotifications().get(0).isBefore(LocalDateTime.now())) {
                     thereIsNothing = false;
-                    notificationsListModel.addElement("Name:" + a.getDueName());
-                    notificationsListModel.addElement("Due:" + a.getFutureDate());
+                    notificationsListModel.addElement("<html>Name:" + a.getDueName() + "<br/>Due:" + a.getFutureDate());
                 }
             }
         }
+
         if (thereIsNothing) {
             notificationsListModel.addElement("Nothing for now!");
         }
@@ -393,7 +405,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         if (selectedAlert == JOptionPane.YES_OPTION) {
             String name = newName.getText();
             myAccount.changeName(name);
-            this.accountName.setText(name);
+            this.accountName.setText("Name: " + name);
         }
     }
 
@@ -660,7 +672,30 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     // MODIFIES: this
     // EFFECTS: confirms a notification in the notification list
     private void confirmNotificationAction() {
+        JTextField confirmAlert = new JTextField();
+        confirmAlert.setEditable(true);
 
+        JPanel panelForConfirm = new JPanel();
+        panelForConfirm.add(new JLabel("TYPE THE ALERT NAME YOU WOULD LIKE TO CONFIRM:"));
+        panelForConfirm.add(confirmAlert);
+
+        panelForConfirm.setLayout(new BoxLayout(panelForConfirm, BoxLayout.PAGE_AXIS));
+
+        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForConfirm,
+                "", JOptionPane.OK_CANCEL_OPTION);
+
+        if (selectedAlert == JOptionPane.YES_OPTION) {
+            try {
+                for (Alert a : myAccount.getAlerts().getList()) {
+                    if (a.getDueName().equals(confirmAlert.getText().toUpperCase())) {
+                        a.confirmNotification(LocalDateTime.now());
+                        updateNotifications();
+                    }
+                }
+            } catch (Exception ee) {
+                displayInvalidInput();
+            }
+        }
     }
 
 }

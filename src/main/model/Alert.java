@@ -4,7 +4,6 @@ package model;
 import org.json.JSONObject;
 import persistance.Writable;
 
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -36,9 +35,11 @@ public class Alert implements Writable {
         if (repeat < 0) {
             throw new NumberFormatException();
         }
-        if (!(date.isBefore(LocalDateTime.now()))) {
-            this.notifications = calculateNotifications(createdDate, date, repeat);
+        if (repeat == 0) {
+            this.notifications = null;
         }
+        this.notifications = calculateNotifications(createdDate, date, repeat);
+
         this.date = date;
         this.due = due;
         this.createdDate = createdDate;
@@ -96,7 +97,7 @@ public class Alert implements Writable {
     //           00 and 59
     // MODIFIES: this
     // EFFECTS: changes the date of the alert
-    public void changeDate(LocalDateTime d)  {
+    public void changeDate(LocalDateTime d) {
         date = d;
         if (!(d.isBefore(LocalDateTime.now()))) {
             this.notifications = calculateNotifications(createdDate, d, repeat);
