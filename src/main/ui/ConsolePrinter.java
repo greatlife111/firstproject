@@ -3,11 +3,12 @@ package ui;
 import model.Event;
 import model.EventLog;
 
-public class ConsolePrinter implements LogPrinter {
-    @Override
+public class ConsolePrinter  {
+
+
     public void printLog(EventLog el) {
-        for (Event next : el) {
-            System.out.println(next.toString() + "\n\n");
+        for (Event e : el) {
+            System.out.println(e.toString() + "\n\n");
         }
     }
 }

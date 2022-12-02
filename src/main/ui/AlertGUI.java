@@ -23,7 +23,6 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 // Represents the alert GUI
@@ -438,20 +437,22 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
 
         panelForDelete.setLayout(new BoxLayout(panelForDelete, BoxLayout.PAGE_AXIS));
 
-        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForDelete,
-                "", JOptionPane.OK_CANCEL_OPTION);
+        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForDelete,"", JOptionPane.OK_CANCEL_OPTION);
 
         boolean alertDoesntExist = true;
         if (selectedAlert == JOptionPane.YES_OPTION) {
             String name = nameForDelete.getText().toUpperCase();
 
+            String n = "";
             for (Alert a : myAccount.getAlerts().getList()) {
                 if (a.getDueName().equals(name)) {
                     alertDoesntExist = false;
-                    myAccount.getAlerts().removeAlert(name);
-                    updateAlerts();
+                    n = name;
                 }
             }
+            myAccount.getAlerts().removeAlert(n);
+            updateAlerts();
+
             if (alertDoesntExist) {
                 displayAlertDoesNotExist();
             }
