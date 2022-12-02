@@ -59,4 +59,30 @@ on the date.
 - As a user, I want to be prompted to save account information before the GUI quits.
 - As a user, I want to be able to view all the notifications and confirm them.
 
+## PHASE FOUR TASK TWO
+Fri Dec 02 00:39:42 PST 2022
+Event log cleared.
 
+
+Fri Dec 02 00:40:11 PST 2022
+HI Alert added
+
+
+Fri Dec 02 00:40:27 PST 2022
+Viewed alerts of next 1 days
+
+
+Fri Dec 02 00:40:37 PST 2022
+Viewed alerts on 2022-12-02T00:00
+
+
+Fri Dec 02 00:40:49 PST 2022
+Account name changed to: quan
+
+
+Fri Dec 02 00:41:00 PST 2022
+WHAT Alert deleted
+
+
+Fri Dec 02 00:41:07 PST 2022
+HI confirmed
