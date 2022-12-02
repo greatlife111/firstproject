@@ -3,7 +3,6 @@ package model;
 
 import org.json.JSONObject;
 import persistance.Writable;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -88,6 +87,7 @@ public class Alert implements Writable {
             if ((n.isBefore(timeAtCheck)) || n.isEqual(timeAtCheck)) {
                 notifications.remove(i);
                 i--;
+                EventLog.getInstance().logEvent(new Event(this.getDueName() + " confirmed"));
             }
         }
     }
@@ -157,7 +157,7 @@ public class Alert implements Writable {
         json.put("date", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         json.put("due", due);
         json.put("repeat", repeat);
+//        json.put("notifications", notifications);
         return json;
     }
-
 }

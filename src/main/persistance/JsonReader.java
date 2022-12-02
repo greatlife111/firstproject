@@ -81,6 +81,7 @@ public class JsonReader {
         LocalDateTime dueTime = LocalDateTime.parse(jsonObject.getString("date"), dateFormat);
         String due = jsonObject.getString("due");
         int repeat = jsonObject.getInt("repeat");
+//        List<LocalDateTime> dates = (List<LocalDateTime>) jsonObject.get("notifications");
 
         Alert alert = new Alert(createdDate, dueTime, due, repeat);
         alertlist.addAlert(alert);

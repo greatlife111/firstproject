@@ -89,7 +89,7 @@ public class TestAlertList {
             list1.addAlert(alert2);
             list1.addAlert(alert3);
             LocalDateTime begin = LocalDateTime.of(2023, 10, 19, 1, 1);
-            assertEquals(2, list1.viewAlertNextDays(1, begin).size());
+            assertEquals(1, list1.viewAlertNextDays(1, begin).size());
         } catch (NumberFormatException ee) {
             fail("valid input");
         }

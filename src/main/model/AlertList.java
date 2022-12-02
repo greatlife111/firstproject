@@ -44,6 +44,7 @@ public class AlertList implements Writable {
     public boolean addAlert(Alert a) {
         if (!(list.contains(a))) {
             list.add(a);
+            EventLog.getInstance().logEvent(new Event(a.getDueName() + " Alert added"));
         }
         return false;
     }
@@ -57,8 +58,9 @@ public class AlertList implements Writable {
             if (a.getDueName().equals(alertName)) {
                 list.remove(i);
                 i--;
+                EventLog.getInstance().logEvent(new Event(alertName + " Alert deleted"));
             }
-        } //remember boolean case
+        }
     }
 
     // REQUIRES: none
@@ -72,6 +74,7 @@ public class AlertList implements Writable {
                 alertListBeforeDate.add(a);
             }
         }
+        EventLog.getInstance().logEvent(new Event("Viewed alerts before " + d));
         return alertListBeforeDate;
     }
 
@@ -93,6 +96,7 @@ public class AlertList implements Writable {
                     alertListOfNextDays.add(a);
                 }
             }
+            EventLog.getInstance().logEvent(new Event("Viewed alerts of next " + d + " days"));
             return alertListOfNextDays;
         }
     }
@@ -117,6 +121,7 @@ public class AlertList implements Writable {
                 alertListOfTheDay.add(a);
             }
         }
+        EventLog.getInstance().logEvent(new Event("Viewed alerts on " + d));
         return alertListOfTheDay;
     }
 
@@ -127,6 +132,7 @@ public class AlertList implements Writable {
         json.put("list", alertListToJson());
         return json;
     }
+
 
     private JSONArray alertListToJson() {
         JSONArray jsonArray = new JSONArray();

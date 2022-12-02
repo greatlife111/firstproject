@@ -46,14 +46,6 @@ class TestAlert {
             //
         }
 
-        try {
-            Alert alert = new Alert(LocalDateTime.of(2022, 1, 1, 1, 1),
-                    "phase 1", 1);
-            assertNull(alert.getNotifications());
-        } catch (NumberFormatException ee) {
-            //
-        }
-
     }
 
 

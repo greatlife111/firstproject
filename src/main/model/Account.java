@@ -3,6 +3,7 @@ package model;
 import org.json.JSONObject;
 import persistance.Writable;
 
+
 // represents an account having an id, name, and list of alerts.
 public class Account implements Writable {
     private final int id;
@@ -38,6 +39,7 @@ public class Account implements Writable {
     // EFFECTS: changes the account name
     public void changeName(String s) {
         name = s;
+        EventLog.getInstance().logEvent(new Event("Account name changed to: " + s));
     }
 
     @Override

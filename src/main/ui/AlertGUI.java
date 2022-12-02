@@ -3,6 +3,8 @@ package ui;
 import model.Account;
 import model.Alert;
 import model.AlertList;
+import model.EventLog;
+import model.exceptions.LogException;
 import persistance.JsonReader;
 import persistance.JsonWriter;
 
@@ -21,6 +23,7 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 // Represents the alert GUI
@@ -62,17 +65,21 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     JTextField forRepeat;
     JPanel panelForAddAlert;
 
+    // for logging
+    ConsolePrinter cp;
+
     // EFFECTS: sets up the app window
     public AlertGUI(String title) {
         super(title);
 
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initializeFields();
         this.pack();
         startPrompt();
         this.setContentPane(initializeGraphics());
         savePrompt();
     }
+
 
     // MODIFIES: this
     // EFFECTS: initializes the data fields
@@ -83,6 +90,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         jsonWriter = new JsonWriter(JSON_STORE);
         alertListModel = new DefaultListModel<>();
         notificationsListModel = new DefaultListModel<>();
+        cp = new ConsolePrinter();
     }
 
 
@@ -101,14 +109,21 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                         jsonWriter.write(myAccount);
                         jsonWriter.close();
                     } catch (FileNotFoundException e) {
-                        JOptionPane.showMessageDialog(null,
-                                "Unable to write to" + JSON_STORE, "FILE NOT FOUND",
+                        JOptionPane.showMessageDialog(null, "Unable to save", "",
                                 JOptionPane.YES_OPTION);
                     }
-                    dispose();
+                }
+                try {
+                    printLogEvents();
+                } catch (LogException e) {
+                    System.out.println("UNABLE TO PRINT LOG");
                 }
             }
         });
+    }
+
+    private void printLogEvents() throws LogException {
+        cp.printLog(EventLog.getInstance());
     }
 
     // EFFECTS: prompts the user to load saved data before the app starts
@@ -131,6 +146,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
     // EFFECTS: loads account with previously saved information
     private void loadAccount() {
         updateAlerts();
+        EventLog.getInstance().clear();
         updateNotifications();
     }
 
@@ -167,7 +183,6 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                 if (tabs.getSelectedIndex() == 1) {
                     updateNotifications();
                 }
-                System.out.println("Tab: " + tabs.getSelectedIndex());
             }
         });
 
@@ -367,6 +382,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         for (Alert a : alerts) {
             alertListModel.addElement(a);
         }
+        updateNotifications();
     }
 
     // MODIFIES: this
@@ -416,13 +432,13 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         JTextField nameForDelete = new JTextField();
         nameForDelete.setEditable(true);
 
-        JPanel panelForDeleteAlert = new JPanel();
-        panelForDeleteAlert.add(new JLabel("ALERT NAME TO DELETE:"));
-        panelForDeleteAlert.add(nameForDelete);
+        JPanel panelForDelete = new JPanel();
+        panelForDelete.add(new JLabel("ALERT NAME TO DELETE:"));
+        panelForDelete.add(nameForDelete);
 
-        panelForDeleteAlert.setLayout(new BoxLayout(panelForDeleteAlert, BoxLayout.PAGE_AXIS));
+        panelForDelete.setLayout(new BoxLayout(panelForDelete, BoxLayout.PAGE_AXIS));
 
-        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForDeleteAlert,
+        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForDelete,
                 "", JOptionPane.OK_CANCEL_OPTION);
 
         boolean alertDoesntExist = true;
@@ -434,7 +450,6 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
                     alertDoesntExist = false;
                     myAccount.getAlerts().removeAlert(name);
                     updateAlerts();
-                    updateNotifications();
                 }
             }
             if (alertDoesntExist) {
@@ -465,7 +480,6 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
 
         addSelectedAlertToList();
         updateAlerts();
-        updateNotifications();
     }
 
 
@@ -697,6 +711,62 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
             }
         }
     }
+
+//
+//    /**
+//     * Represents the action to be taken when the user wants to
+//     * print the event log.
+//     */
+//    private class PrintLogAction extends AbstractAction {
+//        PrintLogAction() {
+//            super("Print log to...");
+//        }
+//
+//        @Override
+//        public void actionPerformed(ActionEvent evt) {
+//            String selected = (String) printCombo.getSelectedItem();
+//            LogPrinter lp;
+//            try {
+//                if (selected.equals(FILE_DESCRIPTOR))
+//                    lp = new ConsolePrinter();
+//                else {
+//                    lp = new ConsolePrinter(AlertGUI.this);
+//                    desktop.add((ConsolePrinter) lp);
+//                }
+//
+//                lp.printLog(EventLog.getInstance());
+//            } catch (LogException e) {
+//                JOptionPane.showMessageDialog(null, e.getMessage(), "System Error",
+//                        JOptionPane.ERROR_MESSAGE);
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Represents the action to be taken when the user wants to
+//     * clear the event log.
+//     */
+//    private class ClearLogAction extends AbstractAction {
+//        ClearLogAction() {
+//            super("Clear log");
+//        }
+//
+//        @Override
+//        public void actionPerformed(ActionEvent evt) {
+//            EventLog.getInstance().clear();
+//        }
+//    }
+//
+//    /**
+//     * Represents action to be taken when user clicks desktop
+//     * to switch focus. (Needed for key handling.)
+//     */
+//    private class DesktopFocusAction extends MouseAdapter {
+//        @Override
+//        public void mouseClicked(MouseEvent e) {
+//            AlarmControllerUI.this.requestFocusInWindow();
+//        }
+//    }
 
 }
 
