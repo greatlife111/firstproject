@@ -86,3 +86,12 @@ WHAT Alert deleted
 
 Fri Dec 02 00:41:07 PST 2022
 HI confirmed
+
+## PHASE FOUR TASK THREE
+
+- make the Alert Class Abstract and have two classes extending it: alerts that will notify the user (repeat > 0), and
+alerts that won't (repeat = 0)
+- make the notifications field inside Alert Class its own class and pass it in as a parameter when instantiating an
+Alert type object so that the notifications can be saved along with other components of the alert
+- Categorize the MAINGUI class by tabs: create a new ui class for each tab to enhance readability of code, hence
+reducing the amount of fields in the MAINGUI class

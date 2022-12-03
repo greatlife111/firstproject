@@ -121,6 +121,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
         });
     }
 
+    // EFFECTS: print the log events performed by user
     private void printLogEvents() throws LogException {
         cp.printLog(EventLog.getInstance());
     }
@@ -437,7 +438,7 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
 
         panelForDelete.setLayout(new BoxLayout(panelForDelete, BoxLayout.PAGE_AXIS));
 
-        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForDelete,"", JOptionPane.OK_CANCEL_OPTION);
+        int selectedAlert = JOptionPane.showConfirmDialog(null, panelForDelete, "", JOptionPane.OK_CANCEL_OPTION);
 
         boolean alertDoesntExist = true;
         if (selectedAlert == JOptionPane.YES_OPTION) {
@@ -712,64 +713,8 @@ public class AlertGUI extends JFrame implements ListSelectionListener {
             }
         }
     }
-
-//
-//    /**
-//     * Represents the action to be taken when the user wants to
-//     * print the event log.
-//     */
-//    private class PrintLogAction extends AbstractAction {
-//        PrintLogAction() {
-//            super("Print log to...");
-//        }
-//
-//        @Override
-//        public void actionPerformed(ActionEvent evt) {
-//            String selected = (String) printCombo.getSelectedItem();
-//            LogPrinter lp;
-//            try {
-//                if (selected.equals(FILE_DESCRIPTOR))
-//                    lp = new ConsolePrinter();
-//                else {
-//                    lp = new ConsolePrinter(AlertGUI.this);
-//                    desktop.add((ConsolePrinter) lp);
-//                }
-//
-//                lp.printLog(EventLog.getInstance());
-//            } catch (LogException e) {
-//                JOptionPane.showMessageDialog(null, e.getMessage(), "System Error",
-//                        JOptionPane.ERROR_MESSAGE);
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Represents the action to be taken when the user wants to
-//     * clear the event log.
-//     */
-//    private class ClearLogAction extends AbstractAction {
-//        ClearLogAction() {
-//            super("Clear log");
-//        }
-//
-//        @Override
-//        public void actionPerformed(ActionEvent evt) {
-//            EventLog.getInstance().clear();
-//        }
-//    }
-//
-//    /**
-//     * Represents action to be taken when user clicks desktop
-//     * to switch focus. (Needed for key handling.)
-//     */
-//    private class DesktopFocusAction extends MouseAdapter {
-//        @Override
-//        public void mouseClicked(MouseEvent e) {
-//            AlarmControllerUI.this.requestFocusInWindow();
-//        }
-//    }
-
 }
+
 
 
 

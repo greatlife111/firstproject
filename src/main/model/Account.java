@@ -42,6 +42,7 @@ public class Account implements Writable {
         EventLog.getInstance().logEvent(new Event("Account name changed to: " + s));
     }
 
+    // EFFECTS: converts the Account class into a JSONObject
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

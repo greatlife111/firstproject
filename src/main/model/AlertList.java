@@ -126,6 +126,7 @@ public class AlertList implements Writable {
     }
 
 
+    // EFFECTS: converts the AlertList into a JSONObject
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
@@ -134,6 +135,7 @@ public class AlertList implements Writable {
     }
 
 
+    // EFFECTS: converts the list of alerts into a JSONArray
     private JSONArray alertListToJson() {
         JSONArray jsonArray = new JSONArray();
 

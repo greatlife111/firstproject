@@ -150,6 +150,7 @@ public class Alert implements Writable {
     }
 
 
+    // EFFECTS: converts the Alert object into a JSONObject
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+// For console-user interaction
 public class AlertApp {
     private static final String JSON_STORE = "./data/MyAlertList.json";
     private final Scanner input;
