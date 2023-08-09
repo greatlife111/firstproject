@@ -1,14 +1,5 @@
 # My Personal Project
 
-## A subtitle
-
-A *bulleted* list:
-- item 1
-- item 2
-- item 3
-
-An example of text with **bold** and *italic* fonts.
-
 # Project Name: DUE ALERT
 
 
@@ -28,66 +19,22 @@ The target will be students who need to keep track of deadlines and important da
 
 - ***Why is this project of interest to me?***
 
-As someone who tend to forget about assignments and poor at time management myself, I've always wished that there is an
-academic based application that keeps track of all the important dates that I have assignments due. There are 
+As someone who tends to forget about assignments and is poor at time management myself, I've always wished that there is an
+academic-based application that keeps track of all the important dates that I have assignments due. There are 
 applications with ample tools to set reminders, differentiate the type of reminders, etc. However, it can be 
 overwhelming to look at all the events at once. Thus, I want to create an application that is concise enough to store
-all the reminder information and student-friendly.
+all the reminder information and is student-friendly.
 
 
-## User Stories
+## What you can do as a user?
 
-- As a user, I want to be able to add a due alert to my alert list.
-- As a user, I want to be able to view all my alerts in the next 
-however many days.
-- As a user, I want to be able to view all my alerts before a certain date.
-- As a user, I want to be able to enter a date and view all the due alerts
-on the date.
-- As a user, I want to be able to delete a due alert.
-- As a user, I want to be able to edit account information and alert details.
-
-## PHASE TWO 
-- As a user, I want to be able to save all changes to my account including the id, name, and the alerts created
-- As a user, when I start the application, I want to be given the option to load my alert list.
-
-## PHASE THREE
-- As a user, I want to be able to add multiple alerts to the alert list.
-- As a user, I want to be able to delete multiple alerts in the alert list.
-- As a user, I want to be able to view details of a particular alert.
-- As a user, I want to be able to view alerts of next however many days, a certain date.
-- As a user, I want to be prompted to load account information before the GUI starts.
-- As a user, I want to be prompted to save account information before the GUI quits.
-- As a user, I want to be able to view all the notifications and confirm them.
-
-## PHASE FOUR TASK TWO
-Fri Dec 02 00:39:42 PST 2022
-Event log cleared.
-
-
-Fri Dec 02 00:40:11 PST 2022
-HI Alert added
-
-
-Fri Dec 02 00:40:27 PST 2022
-Viewed alerts of next 1 days
-
-
-Fri Dec 02 00:40:37 PST 2022
-Viewed alerts on 2022-12-02T00:00
-
-
-Fri Dec 02 00:40:49 PST 2022
-Account name changed to: quan
-
-
-Fri Dec 02 00:41:00 PST 2022
-WHAT Alert deleted
-
-
-Fri Dec 02 00:41:07 PST 2022
-HI confirmed
-
-## PHASE FOUR TASK THREE
+- add  and delete alerts to your alert list
+- view all alerts in the next however many days
+- view all alerts before a certain date
+- view all alerts on a specific date
+- edit account information and alert details
+- save all alert details before closing the gui and load them when you open the gui again
+- view your notifications
 
 - make the Alert Class Abstract and have two classes extending it: alerts that will notify the user (repeat > 0), and
 alerts that won't (repeat = 0)
