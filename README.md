@@ -1,6 +1,6 @@
 # My Personal Project
 
-# Project Name: DUE ALERT
+# Project Name: ALERT SYSTEM
 
 
 - ***What will the application do?***
