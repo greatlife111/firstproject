@@ -36,6 +36,7 @@ all the reminder information and is student-friendly.
 - save all alert details before closing the gui and load them when you open the gui again
 - view your notifications
 
+## Ways for improvement in the future
 - make the Alert Class Abstract and have two classes extending it: alerts that will notify the user (repeat > 0), and
 alerts that won't (repeat = 0)
 - make the notifications field inside Alert Class its own class and pass it in as a parameter when instantiating an
